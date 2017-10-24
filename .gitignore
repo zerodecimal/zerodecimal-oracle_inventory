@@ -1,5 +1,6 @@
 .*.sw[op]
 .metadata
+.vscode
 .yardoc
 .yardwarns
 *.iml
@@ -19,4 +20,3 @@
 /spec/fixtures/modules/
 /tmp/
 /vendor/
-
