@@ -137,7 +137,7 @@ begin
                 when /^oracle.*(wls|coherence)/            ## WLS_HOME
                   o_inventory['wls_home'] = home_dir
                 when /Oracle Client/i                      ## DB_CLIENT_HOME
-                  o_inventory['db_client_home'] = home_dir
+                  o_inventory['client_home'] = home_dir
                 end
               end
               h_inventory.clear
