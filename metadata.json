@@ -1,7 +1,7 @@
 {
-  "name": "ericmiller-oracle_inventory",
+  "name": "zerodecimal-oracle_inventory",
   "version": "0.1.0",
-  "author": "ericmiller",
+  "author": "zerodecimal",
   "summary": "This module manages the Oracle central inventory pointer, and provides facts from the inventory.",
   "license": "Apache-2.0",
   "source": "https://rzslcgitrepo1.rz.nucorsteel.local/puppet/oracle_inventory.git",
