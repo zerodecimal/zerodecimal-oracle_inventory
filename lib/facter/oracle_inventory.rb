@@ -10,7 +10,7 @@
     oms_home
     agent_home
    *oracle_emagent (associative array of agent home parameter/value pairs)
-    client_home
+    db_client_home
     ebs_env_home
     wls_home
     cluster_nodes (comma-delimited list of RAC cluster nodes)
@@ -136,8 +136,8 @@ begin
                   o_inventory['ebs_env_home'] = home_dir.sub(/\/fs.*/, '')
                 when /^oracle.*(wls|coherence)/            ## WLS_HOME
                   o_inventory['wls_home'] = home_dir
-                when /Oracle Client/i                      ## CLIENT_HOME
-                  o_inventory['client_home'] = home_dir
+                when /Oracle Client/i                      ## DB_CLIENT_HOME
+                  o_inventory['db_client_home'] = home_dir
                 end
               end
               h_inventory.clear
