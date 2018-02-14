@@ -148,7 +148,7 @@ begin
     end
     c_inventory.clear
     ## Join the db_homes into a string
-    if db_homes.length
+    if db_homes.length > 0
       o_inventory['oracle_home'] = db_homes.join(';')
     end
   end
