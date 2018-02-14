@@ -124,8 +124,15 @@ begin
                     'psu_inst_time' => psu_inst_time,
                     'sid'           => oratab[home_dir] || '',
                   }
-                when /^EM Platform \(OMS\)/i               ## OMS_HOME
+                when /^(EM Platform \(OMS\)|oracle.sysman.top.oms)/i ## OMS_HOME
                   o_inventory['oms_home'] = home_dir
+                ## This garbage is in here until we figure out a better way to
+                ## identify the software in an Oracle Home. It's a result of the
+                ## weird OMS inventory on rzslca940.
+                when /^oracle\.classloader/i
+                  if h_inventory['TL_LIST'][0]['COMP'][0]['INV_LOC'][/oem/i]
+                    o_inventory['oms_home'] = home_dir
+                  end
                 when /^EM Platform \(Agent\)/i             ## AGENT_HOME
                   o_inventory['agent_home'] = home_dir
                   o_inventory['oracle_emagent'][home_dir] = {
