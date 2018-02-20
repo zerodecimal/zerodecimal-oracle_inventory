@@ -61,7 +61,8 @@ begin
   ## Parse a block of XML and return PSU version/install time data
   ## Parameters:
   ##   oneoff_list (array): the XML array
-  def get_oneoff_info (oneoff_list)
+  ##   type (string): type of home (OCW, Database)
+  def get_oneoff_info (oneoff_list, type)
     times = []
     patches = {}
     data = {
@@ -70,7 +71,7 @@ begin
     }
     oneoff = oneoff_list[0]['ONEOFF'] || []
     oneoff.each do |patch|
-      if patch['DESC'][0][/^(?:OCW|Database) Patch Set Update : (\S+)/]
+      if patch['DESC'][0][/^#{type} Patch Set Update : (\S+)/]
         patches[$1] = patch['INSTALL_TIME']
         times << patch['INSTALL_TIME']
       end
@@ -107,8 +108,8 @@ begin
               h_inventory = XmlSimple.xml_in(home_inv_comps)
               all_comps = h_inventory['TL_LIST'][0]['COMP'] || []
               if all_comps.length > 0
-                all_comps.each_index do |comp_i|
-                  case all_comps[comp_i]['NAME']
+                all_comps.each do |comp|
+                  case comp['NAME']
                   ## CRS Home *note* This can also be found in /etc/oracle/olr.loc
                   when 'oracle.crs'
                     ## Get the PSU information
@@ -116,7 +117,7 @@ begin
                     psu_inst_time = ''
                     oneoff_list = h_inventory['ONEOFF_LIST'] || []
                     if oneoff_list.length > 0
-                      psu_data = get_oneoff_info(oneoff_list)
+                      psu_data = get_oneoff_info(oneoff_list, 'OCW')
                       if psu_data.size > 0
                         psu_ver = psu_data['ver']
                         psu_inst_time = psu_data['inst_time']
@@ -125,8 +126,8 @@ begin
                     ## There can be only one
                     o_inventory['oracle_crs_home'] = {
                       home_dir => {
-                        'ver'           => h_inventory['TL_LIST'][0]['COMP'][comp_i]['VER'],
-                        'inst_time'     => h_inventory['TL_LIST'][0]['COMP'][comp_i]['INSTALL_TIME'],
+                        'ver'           => comp['VER'],
+                        'inst_time'     => comp['INSTALL_TIME'],
                         'psu_ver'       => psu_ver,
                         'psu_inst_time' => psu_inst_time,
                       }
@@ -150,14 +151,14 @@ begin
                       g_inventory.clear
                     end
                     break
-                  ## DB Home
+                  ## Database Home
                   when 'oracle.server'
                     ## Get the PSU information
                     psu_ver = ''
                     psu_inst_time = ''
                     oneoff_list = h_inventory['ONEOFF_LIST'] || []
                     if oneoff_list.length > 0
-                      psu_data = get_oneoff_info(oneoff_list)
+                      psu_data = get_oneoff_info(oneoff_list, 'Database')
                       if psu_data.size > 0
                         psu_ver = psu_data['ver']
                         psu_inst_time = psu_data['inst_time']
@@ -165,8 +166,8 @@ begin
                     end
                     o_inventory.has_key?('oracle_db_home') || o_inventory['oracle_db_home'] = {}
                     o_inventory['oracle_db_home'][home_dir] = {
-                      'ver'           => h_inventory['TL_LIST'][0]['COMP'][comp_i]['VER'],
-                      'inst_time'     => h_inventory['TL_LIST'][0]['COMP'][comp_i]['INSTALL_TIME'],
+                      'ver'           => comp['VER'],
+                      'inst_time'     => comp['INSTALL_TIME'],
                       'psu_ver'       => psu_ver,
                       'psu_inst_time' => psu_inst_time,
                       'sid'           => oratab[home_dir] || [],
@@ -177,8 +178,8 @@ begin
                     ## There can be only one
                     o_inventory['oracle_oms_home'] = {
                       home_dir => {
-                        'ver'       => h_inventory['TL_LIST'][0]['COMP'][comp_i]['VER'],
-                        'inst_time' => h_inventory['TL_LIST'][0]['COMP'][comp_i]['INSTALL_TIME'],
+                        'ver'       => comp['VER'],
+                        'inst_time' => comp['INSTALL_TIME'],
                       }
                     }
                     break
@@ -187,8 +188,8 @@ begin
                     ## There can be only one
                     o_inventory['oracle_em_agent_home'] = {
                       home_dir => {
-                        'ver'       => h_inventory['TL_LIST'][0]['COMP'][comp_i]['VER'],
-                        'inst_time' => h_inventory['TL_LIST'][0]['COMP'][comp_i]['INSTALL_TIME'],
+                        'ver'       => comp['VER'],
+                        'inst_time' => comp['INSTALL_TIME'],
                       }
                     }
                     break
@@ -197,8 +198,8 @@ begin
                     ## There can be only one
                     o_inventory['oracle_ebs_home'] = {
                       home_dir.sub(/\/fs.*/, '') => {
-                        'ver'       => h_inventory['TL_LIST'][0]['COMP'][comp_i]['VER'],
-                        'inst_time' => h_inventory['TL_LIST'][0]['COMP'][comp_i]['INSTALL_TIME'],
+                        'ver'       => comp['VER'],
+                        'inst_time' => comp['INSTALL_TIME'],
                       }
                     }
                     break
@@ -206,16 +207,16 @@ begin
                   when /^oracle\.(wls\.clients|coherence)$/
                     o_inventory.has_key?('oracle_wls_home') || o_inventory['oracle_wls_home'] = {}
                     o_inventory['oracle_wls_home'][home_dir] = {
-                      'ver'       => h_inventory['TL_LIST'][0]['COMP'][comp_i]['VER'],
-                      'inst_time' => h_inventory['TL_LIST'][0]['COMP'][comp_i]['INSTALL_TIME'],
+                      'ver'       => comp['VER'],
+                      'inst_time' => comp['INSTALL_TIME'],
                     }
                     break
                   ## Client Home
                   when 'oracle.client'
                     o_inventory.has_key?('oracle_client_home') || o_inventory['oracle_client_home'] = {}
                     o_inventory['oracle_client_home'][home_dir] = {
-                      'ver'       => h_inventory['TL_LIST'][0]['COMP'][comp_i]['VER'],
-                      'inst_time' => h_inventory['TL_LIST'][0]['COMP'][comp_i]['INSTALL_TIME'],
+                      'ver'       => comp['VER'],
+                      'inst_time' => comp['INSTALL_TIME'],
                     }
                     break
                   else

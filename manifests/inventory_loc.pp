@@ -8,8 +8,8 @@
 #   include oracle_inventory::inventory_loc
 class oracle_inventory::inventory_loc {
 
-  $oracle_inventory_loc = hiera('oracle_inventory_loc')
-  $oracle_primary_group = hiera('oracle_primary_group')
+  $oracle_inventory_loc = lookup('oracle_inventory_loc')
+  $oracle_primary_group = lookup('oracle_primary_group')
 
   file { '/etc/oraInst.loc':
     ensure  => file,
