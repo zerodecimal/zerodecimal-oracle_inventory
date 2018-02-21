@@ -7,13 +7,14 @@
 # @example
 #   include oracle_inventory::inventory_loc
 class oracle_inventory::inventory_loc (
-  $ensure     = $::oracle_inventory::ensure,
-  $inst_group = $::oracle_inventory::inst_group,
+  $ensure        = $::oracle_inventory::ensure,
+  $inventory_loc = $::oracle_inventory::inventory_loc,
+  $inst_group    = $::oracle_inventory::inst_group,
 ) inherits oracle_inventory {
 
   $inventory_loc = defined('$::oracle_inventory') ? {
     true    => regsubst($::oracle_inventory, '/ContentsXML.+', ''),
-    default => '/u01/app/oraInventory'
+    default => $inventory_loc
   }
 
   $inventory_pointer = $::kernel ? {

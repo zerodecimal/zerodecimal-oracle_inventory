@@ -10,10 +10,14 @@ class oracle_inventory (
   Enum[
     'present',
     'absent'
-  ]      $ensure     = 'present',
-  String $inst_group = 'oinstall',
+  ]                $ensure        = 'present',
+  Stdlib::UnixPath $inventory_loc = '/u01/app/oraInventory',
+  String           $inst_group    = 'oinstall',
 ){
 
-  include ::oracle_inventory::inventory_loc
+  ## Manage the inventory pointer file if not on Windows
+  if $::kernel != 'windows' {
+    include ::oracle_inventory::inventory_loc
+  }
 
 }
