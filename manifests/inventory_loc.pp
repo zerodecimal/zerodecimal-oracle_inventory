@@ -8,6 +8,9 @@
 #   include oracle_inventory::inventory_loc
 class oracle_inventory::inventory_loc (
   $ensure        = $::oracle_inventory::ensure,
+  $file_owner    = $::oracle_inventory::file_owner,
+  $file_group    = $::oracle_inventory::file_group,
+  $file_mode     = $::oracle_inventory::file_mode,
   $inventory_dir = $::oracle_inventory::inventory_loc,
   $inst_group    = $::oracle_inventory::inst_group,
 ) inherits oracle_inventory {
@@ -18,9 +21,9 @@ class oracle_inventory::inventory_loc (
   }
 
   $inventory_pointer = $::kernel ? {
-    'Linux' => '/etc/oraInst.loc',
-    'Unix'  => '/var/opt/oracle/oraInst.loc',
-    default => undef
+    'Linux'           => '/etc/oraInst.loc',
+    /(Unix|HP|SunOS)/ => '/var/opt/oracle/oraInst.loc',
+    default           => undef
   }
 
   $real_content = $ensure ? {
@@ -33,9 +36,9 @@ class oracle_inventory::inventory_loc (
 
   file { $inventory_pointer:
     ensure  => $ensure,
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
+    owner   => $file_owner,
+    group   => $file_group,
+    mode    => $file_mode,
     content => $real_content,
   }
 

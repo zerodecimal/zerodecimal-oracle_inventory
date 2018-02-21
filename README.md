@@ -1,16 +1,6 @@
 
 # oracle_inventory
 
-Welcome to your new module. A short overview of the generated parts can be found in the PDK documentation at https://docs.puppet.com/pdk/1.0/pdk_generating_modules.html#module-contents .
-
-Below you'll find the default README template ready for some content.
-
-
-
-
-
-
-
 #### Table of Contents
 
 1. [Description](#description)
@@ -25,57 +15,154 @@ Below you'll find the default README template ready for some content.
 
 ## Description
 
-Start with a one- or two-sentence summary of what the module does and/or what problem it solves. This is your 30-second elevator pitch for your module. Consider including OS/Puppet version it works with.       
+This module provides an Oracle inventory parser that produces a set of facts showing what Oracle products are installed on your system. For non-Windows servers, it also includes a class to manage the contents of the inventory pointer file.
 
-You can give more descriptive information in a second paragraph. This paragraph should answer the questions: "What does this module *do*?" and "Why would I use it?" If your module has a range of functionality (installation, configuration, management, etc.), this is the time to mention it.
+The inventory parser begins with the central inventory XML file, then inspects all installed (not removed) homes referenced therein. If there is a product installed in a home that matches a known component ID (see [Reference](#reference) section below), a fact is created with that home location, version, and install date/time. In the case of CRS and Database homes, PSU (patch set update) versions and install date/times are included.
+
+These facts can be useful in configuring servers with Oracle products installed. For example, when the Puppet agent runs after a database home is installed, a fact called "oracle_db_home" is created and can then be used to set the oracle user's environment.
+
+*Puppet version 4.3 is required because this module makes use of features such as strong data typing.*
 
 ## Setup
 
-### What oracle_inventory affects **OPTIONAL**
+Install the oracle_inventory module to add the facts and classes to your environment.
 
-If it's obvious what your module touches, you can skip this section. For example, folks can probably figure out that your mysql_instance module affects their MySQL instances.
+### What oracle_inventory affects
 
-If there's more that they should know about, though, this is the place to mention:
+ Agent nodes will need to be able to install the xml-simple Ruby GEM using the puppet_gem provider. The ensure_packages function is used for this, to give users the freedom to manage this package resource in another module.
 
-* Files, packages, services, or operations that the module will alter, impact, or execute.
-* Dependencies that your module automatically installs.
-* Warnings or other important notices.
+### Setup Requirements
 
-### Setup Requirements **OPTIONAL**
-
-If your module requires anything extra before setting up (pluginsync enabled, another module, etc.), mention it here. 
-  
-If your most recent release breaks compatibility or requires particular steps for upgrading, you might want to include an additional "Upgrading" section here.
+puppetlabs/stdlib >= 4.13.1 is required.
 
 ### Beginning with oracle_inventory  
 
-The very basic steps needed for a user to get the module up and running. This can include setup steps, if necessary, or it can be an example of the most basic use of the module.
+The module can simply be installed with a Puppetfile entry and the facts will be available. To manage the inventory pointer file, include the oracle_inventory class in some profile manifest. To accept the default parameters:
+
+```
+include ::oracle_inventory
+```
 
 ## Usage
 
-This section is where you describe how to customize, configure, and do the fancy stuff with your module here. It's especially helpful if you include usage examples and code samples for doing things with your module.
+To manage the Oracle inventory pointer file with non-default parameters, declare the class in this format:
+
+```
+class { '::oracle_inventory':
+  file_owner    => 'oracle',
+  file_group    => 'oinstall',
+  inventory_dir => '/home/oracle/oraInventory',
+}
+```
 
 ## Reference
 
-Users need a complete list of your module's classes, types, defined types providers, facts, and functions, along with the parameters for each. You can provide this list either via Puppet Strings code comments or as a complete list in the README Reference section.
+### Facts
 
-* If you are using Puppet Strings code comments, this Reference section should include Strings information so that your users know how to access your documentation.
+#### `oracle_inventory`
 
-* If you are not using Puppet Strings, include a list of all of your classes, defined types, and so on, along with their parameters. Each element in this listing should include:
+  * (String) Central inventory file location
 
-  * The data type, if applicable.
-  * A description of what the element does.
-  * Valid values, if the data type doesn't make it obvious.
-  * Default value, if any.
+#### `oracle_crs_home`
+
+  * (Hash) CRS home information
+
+#### `oracle_rac_nodes`
+
+  * (Array) List of RAC cluster nodes
+
+#### `oracle_db_home`
+
+  * (Hash) Database home information
+
+#### `oracle_oms_home`
+
+  * (Hash) OMS (Enterprise Manager) home information
+
+#### `oracle_em_agent_home`
+
+  * (Hash) OEM Agent home information
+
+#### `oracle_ebs_home`
+
+  * (Hash) EBS application home information
+
+#### `oracle_wls_home`
+
+  * (Hash) WebLogic home information
+
+#### `oracle_client_home`
+
+  * (Hash) Database Client home information
+
+### Classes
+
+#### `oracle_inventory`
+
+  * The main class. Any other classes are declared internally.
+
+**Paramters**
+
+`manage_pointer`
+Specifies whether or not to manage the inventory pointer file.
+
+Boolean
+
+Default value: true
+
+`ensure`
+Specifies whether the inventory pointer file should exist.
+
+Values: [ 'present', 'absent' ]
+
+Default value 'present'
+
+`file_owner`
+Specifies the owner of the inventory pointer file.
+
+Values: String
+
+Default value: 'root'
+
+`file_group`
+Specifies the group of the inventory pointer file.
+
+Values: String
+
+Default value: 'root'
+
+`file_mode`
+Specifies the mode of the inventory pointer file.
+
+Values: Valid octal file mode string
+
+Default value: '0644'
+
+`inventory_dir`
+Specifies the path to the central inventory directory.
+
+Values: Valid file path string
+
+Default value: '/u01/app/oraInventory'
+
+`inst_group`
+Specifies the Oracle install owner group.
+
+Values: String
+
+Default value: 'oinstall'
 
 ## Limitations
 
-This is where you list OS compatibility, version compatibility, etc. If there are Known Issues, you might want to include them under their own heading here.
+### Supported Operating Systems
+
+* RedHat
+* CentOS
+* Oracle Linux
+* Scientific Linux
+* Ubuntu
+* Solaris
 
 ## Development
 
-Since your module is awesome, other users will want to play with it. Let them know what the ground rules for contributing are.
-
-## Release Notes/Contributors/Etc. **Optional**
-
-If you aren't using changelog, put your release notes here (though you should consider using changelog). You can also add any additional sections you feel are necessary or important to include here. Please use the `## ` header. 
+* Contributions are always welcome - please submit a pull request or issue on [GitHub](https://github.com/zerodecimal/zerodecimal-oracle_inventory).

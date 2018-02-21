@@ -12,7 +12,7 @@
     oracle_em_agent_home (hash): OEM Agent home information
     oracle_ebs_home (hash): EBS application home information
     oracle_wls_home (hash): WebLogic home information
-    oracle_client_home (hash): Database Client information
+    oracle_client_home (hash): Database Client home information
 
   The Inventory location is defined here:
     UNIX: /var/opt/oracle/oraInst.loc
@@ -30,14 +30,14 @@ begin
 
   ## Global variables
   oratab      = {}
-  ora_inv_loc = Facter.value(:kernel) =~ /linux/i ? '/etc/oraInst.loc'
-              : Facter.value(:kernel) =~ /unix/i  ? '/var/opt/oracle/oraInst.loc'
-              :                                     nil
+  ora_inv_loc = Facter.value(:kernel) =~ /linux/i   ? '/etc/oraInst.loc'
+              : Facter.value(:kernel) !~ /windows/i ? '/var/opt/oracle/oraInst.loc'
+              :                                       nil
   ora_inv     = nil
   o_inventory = {}
 
   ## Find the Central Inventory location if we are not on a Windows platform
-  if (!ora_inv_loc.nil? and File.readable?(ora_inv_loc))
+  if !ora_inv_loc.nil? and File.readable?(ora_inv_loc)
     IO.foreach(ora_inv_loc) do |line|
       line[/^inventory_loc=(.+)$/] && ora_inv = $1 + '/ContentsXML/inventory.xml'
     end
@@ -94,7 +94,7 @@ begin
   end
 
   ## Parse the Central Inventory and begin setting the Fact variables
-  if (ora_inv and File.readable?(ora_inv))
+  if ora_inv and File.readable?(ora_inv)
     o_inventory['oracle_inventory'] = ora_inv
     c_inventory = XmlSimple.xml_in(ora_inv)
     if c_inventory['HOME_LIST'][0]['HOME']

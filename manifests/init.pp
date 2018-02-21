@@ -12,6 +12,9 @@ class oracle_inventory (
     'present',
     'absent'
   ]                $ensure         = 'present',
+  String           $file_owner     = 'root',
+  String           $file_group     = 'root',
+  Stdlib::Filemode $file_mode      = '0644',
   Stdlib::UnixPath $inventory_dir  = '/u01/app/oraInventory',
   String           $inst_group     = 'oinstall',
 ){

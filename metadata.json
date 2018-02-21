@@ -1,10 +1,14 @@
 {
   "name": "zerodecimal-oracle_inventory",
-  "version": "0.1.0",
-  "author": "zerodecimal",
-  "summary": "This module manages the Oracle central inventory pointer, and provides facts from the inventory.",
+  "version": "0.2.0",
+  "author": "Eric Miller",
+  "summary": "This module provides an Oracle inventory parser that creates inventory-based facts, and a class that manages the Oracle central inventory pointer.",
   "license": "Apache-2.0",
-  "source": "https://rzslcgitrepo1.rz.nucorsteel.local/puppet/oracle_inventory.git",
+  "source": "https://github.com/zerodecimal/zerodecimal-oracle_inventory",
+  "tags": [
+    "oracle",
+    "database"
+  ],
   "dependencies": [
     {
       "name": "puppetlabs/stdlib",
@@ -13,61 +17,72 @@
   ],
   "operatingsystem_support": [
     {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "4",
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
       "operatingsystem": "CentOS",
       "operatingsystemrelease": [
+        "4",
+        "5",
+        "6",
         "7"
       ]
     },
     {
       "operatingsystem": "OracleLinux",
       "operatingsystemrelease": [
-        "7"
-      ]
-    },
-    {
-      "operatingsystem": "RedHat",
-      "operatingsystemrelease": [
+        "4",
+        "5",
+        "6",
         "7"
       ]
     },
     {
       "operatingsystem": "Scientific",
       "operatingsystemrelease": [
-        "7"
-      ]
-    },
-    {
-      "operatingsystem": "Debian",
-      "operatingsystemrelease": [
-        "8"
-      ]
-    },
-    {
-      "operatingsystem": "Ubuntu",
-      "operatingsystemrelease": [
-        "16.04"
+        "4",
+        "5",
+        "6"
       ]
     },
     {
       "operatingsystem": "SLES",
       "operatingsystemrelease": [
-        "12"
+        "11 SP1"
       ]
     },
     {
-      "operatingsystem": "Fedora",
+      "operatingsystem": "Debian",
       "operatingsystemrelease": [
-        "25"
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "Ubuntu",
+      "operatingsystemrelease": [
+        "10.04",
+        "12.04"
+      ]
+    },
+    {
+      "operatingsystem": "Solaris",
+      "operatingsystemrelease": [
+        "10",
+        "11"
       ]
     }
   ],
   "requirements": [
     {
       "name": "puppet",
-      "version_requirement": ">= 4.7.0 < 6.0.0"
+      "version_requirement": ">= 4.3.0 < 6.0.0"
     }
-  ],
-  "pdk-version": "1.2.0",
-  "template-url": "file:///opt/puppetlabs/pdk/share/cache/pdk-module-template.git",
-  "template-ref": "heads/master-0-g3f7d5ce"
+  ]
 }
