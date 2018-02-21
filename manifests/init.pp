@@ -11,7 +11,7 @@ class oracle_inventory (
     'present',
     'absent'
   ]                $ensure        = 'present',
-  Stdlib::UnixPath $inventory_loc = '/u01/app/oraInventory',
+  Stdlib::UnixPath $inventory_dir = '/u01/app/oraInventory',
   String           $inst_group    = 'oinstall',
 ){
 

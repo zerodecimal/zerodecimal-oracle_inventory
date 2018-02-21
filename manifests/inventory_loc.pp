@@ -8,13 +8,13 @@
 #   include oracle_inventory::inventory_loc
 class oracle_inventory::inventory_loc (
   $ensure        = $::oracle_inventory::ensure,
-  $inventory_loc = $::oracle_inventory::inventory_loc,
+  $inventory_dir = $::oracle_inventory::inventory_loc,
   $inst_group    = $::oracle_inventory::inst_group,
 ) inherits oracle_inventory {
 
   $inventory_loc = defined('$::oracle_inventory') ? {
     true    => regsubst($::oracle_inventory, '/ContentsXML.+', ''),
-    default => $inventory_loc
+    default => $inventory_dir
   }
 
   $inventory_pointer = $::kernel ? {
