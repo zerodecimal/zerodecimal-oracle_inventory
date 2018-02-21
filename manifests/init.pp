@@ -15,6 +15,9 @@ class oracle_inventory (
   String           $inst_group    = 'oinstall',
 ){
 
+  ## Take care of Ruby GEM dependency for fact script
+  ensure_packages(['xml-simple'], {'ensure' => 'present', 'provider' => 'puppet_gem'})
+
   ## Manage the inventory pointer file if not on Windows
   if $::kernel != 'windows' {
     include ::oracle_inventory::inventory_loc
