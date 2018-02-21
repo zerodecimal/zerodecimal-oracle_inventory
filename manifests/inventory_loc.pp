@@ -6,17 +6,36 @@
 #
 # @example
 #   include oracle_inventory::inventory_loc
-class oracle_inventory::inventory_loc {
+class oracle_inventory::inventory_loc (
+  $ensure     = $::oracle_inventory::ensure,
+  $inst_group = $::oracle_inventory::inst_group,
+) inherits oracle_inventory {
 
-  $oracle_inventory_loc = lookup('oracle_inventory_loc')
-  $oracle_primary_group = lookup('oracle_primary_group')
+  $inventory_loc = defined('$::oracle_inventory') ? {
+    true    => regsubst($::oracle_inventory, '/ContentsXML.+', ''),
+    default => '/u01/app/oraInventory'
+  }
 
-  file { '/etc/oraInst.loc':
-    ensure  => file,
+  $inventory_pointer = $::kernel ? {
+    'Linux' => '/etc/oraInst.loc',
+    'Unix'  => '/var/opt/oracle/oraInst.loc',
+    default => undef
+  }
+
+  $real_content = $ensure ? {
+    'absent' => undef,
+    default  => @("EOT")
+      inventory_loc=${inventory_loc}
+      inst_group=${inst_group}
+      | EOT
+  }
+
+  file { $inventory_pointer:
+    ensure  => $ensure,
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-    content => template("${module_name}/oraInst.loc.erb"),
+    content => $real_content,
   }
 
 }

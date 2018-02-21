@@ -6,7 +6,13 @@
 #
 # @example
 #   include oracle_inventory
-class oracle_inventory {
+class oracle_inventory (
+  Enum[
+    'present',
+    'absent'
+  ]      $ensure     = 'present',
+  String $inst_group = 'oinstall',
+){
 
   include ::oracle_inventory::inventory_loc
 
