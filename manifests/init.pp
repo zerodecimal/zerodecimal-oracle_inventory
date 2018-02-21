@@ -7,7 +7,7 @@
 # @example
 #   include oracle_inventory
 class oracle_inventory (
-  Boolean          $manage_pointer = false,
+  Boolean          $manage_pointer = true,
   Enum[
     'present',
     'absent'
