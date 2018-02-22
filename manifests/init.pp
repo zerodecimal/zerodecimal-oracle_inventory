@@ -25,7 +25,7 @@ class oracle_inventory (
 
   ## Manage the inventory pointer file if not on Windows
   if $manage_pointer and $::kernel != 'windows' {
-    include ::oracle_inventory::inventory_loc
+    include ::oracle_inventory::inventory_pointer
   }
 
 }

@@ -29,7 +29,7 @@ Install the oracle_inventory module to add the facts and classes to your environ
 
 ### What oracle_inventory affects
 
- Agent nodes will need to be able to install the xml-simple Ruby GEM using the puppet_gem provider. The ensure_packages function is used for this, to give users the freedom to manage this package resource in another module.
+ Agent nodes will need to be able to install the xml-simple Ruby gem using the puppet_gem provider. The ensure_packages function is used for this, to give users the freedom to manage this package resource in another module.
 
 ### Setup Requirements
 
@@ -52,6 +52,14 @@ class { '::oracle_inventory':
   file_owner    => 'oracle',
   file_group    => 'oinstall',
   inventory_dir => '/home/oracle/oraInventory',
+}
+```
+
+To install the xml-simple gem and use the facts, but not manage the Oracle inventory pointer file, declare the class as such:
+
+```
+class { '::oracle_inventory':
+  manage_pointer => false,
 }
 ```
 

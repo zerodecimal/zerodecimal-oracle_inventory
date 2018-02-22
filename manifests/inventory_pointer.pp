@@ -1,12 +1,12 @@
-# oracle_inventory::inventory_loc
+# oracle_inventory::inventory_pointer
 #
 # This class manages the Oracle central inventory location pointer.
 #
 # @summary Manages the Oracle central inventory location pointer.
 #
 # @example
-#   include oracle_inventory::inventory_loc
-class oracle_inventory::inventory_loc (
+#   include oracle_inventory::inventory_pointer
+class oracle_inventory::inventory_pointer (
   $ensure        = $::oracle_inventory::ensure,
   $file_owner    = $::oracle_inventory::file_owner,
   $file_group    = $::oracle_inventory::file_group,
