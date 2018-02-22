@@ -37,7 +37,7 @@ puppetlabs/stdlib >= 4.13.1 is required.
 
 ### Beginning with oracle_inventory  
 
-The module can simply be installed with a Puppetfile entry and the facts will be available. To manage the inventory pointer file, include the oracle_inventory class in some profile manifest. To accept the default parameters:
+The module can simply be installed with a Puppetfile entry and the facts will be available (as long as the xml-simple gem is installed). To manage the inventory pointer file, include the oracle_inventory class in some profile manifest. To accept the default parameters:
 
 ```
 include ::oracle_inventory
@@ -93,7 +93,7 @@ class { '::oracle_inventory':
 
 #### `oracle_em_agent_home`
 
-  * (Hash) OEM Agent home information
+  * (Hash) Enterprise Manager Agent home information
 
 #### `oracle_ebs_home`
 
@@ -174,6 +174,17 @@ Default value: 'oinstall'
 * Scientific Linux
 * Ubuntu
 * Solaris
+
+### Supported Oracle versions
+
+The included facts are known to work on the following Oracle software versions. They have not been tested against any others.
+
+* CRS: 11g, 12c
+* Database: 11g, 12c
+* Database Client: 11g, 12c
+* Enterprise Manager (and agent): 12c, 13c
+* E-Business Suite: 12.2
+* WebLogic: 11g, 12c
 
 ## Development
 
