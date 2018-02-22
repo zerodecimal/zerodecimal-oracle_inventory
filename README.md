@@ -59,6 +59,10 @@ class { '::oracle_inventory':
 
 ### Facts
 
+#### `oracle_inventory_pointer`
+
+  * (String) Central inventory pointer file location
+
 #### `oracle_inventory`
 
   * (String) Central inventory file location

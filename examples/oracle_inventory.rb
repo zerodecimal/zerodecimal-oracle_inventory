@@ -32,13 +32,13 @@ require 'time'
 ## Include the REXML namespace
 include REXML
 
-## Global variables
-oratab      = {}
+## Variable declarations
 ora_inv_loc = Facter.value(:kernel) =~ /linux/i   ? '/etc/oraInst.loc'
             : Facter.value(:kernel) !~ /windows/i ? '/var/opt/oracle/oraInst.loc'
             :                                       nil
 ora_inv     = nil
-o_inventory = {}
+o_inventory = { 'oracle_inventory_pointer': ora_inv_loc }
+oratab      = {}
 
 ## Find the Central Inventory location if we are not on a Windows platform
 if !ora_inv_loc.nil? and File.readable?(ora_inv_loc)
