@@ -1,26 +1,5 @@
 # oracle_inventory.rb
 
-=begin
-
-  This script will inspect the central Oracle Inventory
-  and return the following entries, if they exist:
-    oracle_inventory (string): Central inventory file location
-    oracle_crs_home (hash): CRS home information
-    oracle_rac_nodes (array): List of RAC cluster nodes
-    oracle_db_home (hash): Database home information
-    oracle_oms_home (hash): OMS (Enterprise Manager) home information
-    oracle_em_agent_home (hash): OEM Agent home information
-    oracle_ebs_home (hash): EBS application home information
-    oracle_wls_home (hash): WebLogic home information
-    oracle_client_home (hash): Database Client home information
-
-  The Inventory location is defined here:
-    UNIX: /var/opt/oracle/oraInst.loc
-    LINUX: /etc/oraInst.loc
-  On Windows the inventory is always C:/Program Files/Oracle/Inventory/ContentsXML/inventory.xml
-
-=end
-
 begin
 
   ## Required GEMs

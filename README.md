@@ -31,6 +31,8 @@ Install the oracle_inventory module to add the facts and classes to your environ
 
  Agent nodes will need to be able to install the xml-simple Ruby gem using the puppet_gem provider. The ensure_packages function is used for this, to give users the freedom to manage this package resource in another module.
 
+ If you wish to avoid the xml-simple requirement, there is a REXML version of the fact script under examples. Feel free to pull it out and put it under some other module. It produces the same output but takes a little bit longer to run.
+
 ### Setup Requirements
 
 puppetlabs/stdlib >= 4.13.1 is required.
@@ -174,6 +176,7 @@ Default value: 'oinstall'
 * Scientific Linux
 * Ubuntu
 * Solaris
+* Windows
 
 ### Supported Oracle versions
 
