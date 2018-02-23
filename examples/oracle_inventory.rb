@@ -45,10 +45,7 @@ end
 def get_oneoff_info (oneoff_list, type)
   times = []
   patches = {}
-  data = {
-    'ver'       => '',
-    'inst_time' => '',
-  }
+  data = {}
   oneoff_list.each_element('//ONEOFF') do |patch|
     patch.elements['DESC'].text.nil? && next
     if patch.elements['DESC'].text[/^#{type} Patch Set Update : (\S+)/]

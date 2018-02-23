@@ -44,10 +44,7 @@ begin
   def get_oneoff_info (oneoff_list, type)
     times = []
     patches = {}
-    data = {
-      'ver'       => '',
-      'inst_time' => '',
-    }
+    data = {}
     oneoff = oneoff_list[0]['ONEOFF'] || []
     oneoff.each do |patch|
       if patch['DESC'][0][/^#{type} Patch Set Update : (\S+)/]
