@@ -25,15 +25,13 @@ begin
     ora_inv = 'C:/Program Files/Oracle/Inventory/ContentsXML/inventory.xml'
   end
 
-  ## Cache the DB home and SID information from /etc/oratab (ignore ASM)
+  ## Cache the DB home and SID information from /etc/oratab (including ASM)
   if File.readable?('/etc/oratab')
-    File.open('/etc/oratab','r') do |otab_file|
-      otab_file.each_line do |line|
-        next unless line[/^[a-z]/i]
-        entry = line.split(':')
-        oratab.has_key?(entry[1]) || oratab[entry[1]] = []
-        oratab[entry[1]] << entry[0] && oratab[entry[1]].sort!
-      end
+    File.open('/etc/oratab','r').each_line do |line|
+      next unless line[/^[\+a-z]/i]
+      entry = line.split(':')
+      oratab.has_key?(entry[1]) || oratab[entry[1]] = []
+      oratab[entry[1]] << entry[0] && oratab[entry[1]].sort!
     end
   end
 
@@ -89,6 +87,7 @@ begin
                   ## CRS Home *note* This can also be found in /etc/oracle/olr.loc
                   when 'oracle.crs'
                     ## Get the PSU information
+                    psu_ver, psu_inst_time = nil, nil
                     oneoff_list = h_inventory['ONEOFF_LIST'] || []
                     if oneoff_list.length > 0
                       psu_data = get_oneoff_info(oneoff_list, 'OCW')
@@ -104,9 +103,12 @@ begin
                         'inst_time' => comp['INSTALL_TIME'],
                       }
                     }
-                    if defined?(psu_ver)
+                    if !psu_ver.nil?
                       o_inventory['oracle_crs_home'][home_dir]['psu_ver'] = psu_ver
                       o_inventory['oracle_crs_home'][home_dir]['psu_inst_time'] = psu_inst_time
+                    end
+                    if oratab.has_key?(home_dir)
+                      o_inventory['oracle_crs_home'][home_dir]['sid'] = oratab[home_dir][0]
                     end
                     ## Get the list of cluster nodes
                     if File.readable?(home_inv_props)
@@ -130,6 +132,7 @@ begin
                   ## Database Home
                   when 'oracle.server'
                     ## Get the PSU information
+                    psu_ver, psu_inst_time = nil, nil
                     oneoff_list = h_inventory['ONEOFF_LIST'] || []
                     if oneoff_list.length > 0
                       psu_data = get_oneoff_info(oneoff_list, 'Database')
@@ -143,7 +146,7 @@ begin
                       'ver'       => comp['VER'],
                       'inst_time' => comp['INSTALL_TIME'],
                     }
-                    if defined?(psu_ver)
+                    if !psu_ver.nil?
                       o_inventory['oracle_db_home'][home_dir]['psu_ver'] = psu_ver
                       o_inventory['oracle_db_home'][home_dir]['psu_inst_time'] = psu_inst_time
                     end
