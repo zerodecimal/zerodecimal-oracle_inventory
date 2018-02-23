@@ -92,8 +92,6 @@ begin
                   ## CRS Home *note* This can also be found in /etc/oracle/olr.loc
                   when 'oracle.crs'
                     ## Get the PSU information
-                    psu_ver = ''
-                    psu_inst_time = ''
                     oneoff_list = h_inventory['ONEOFF_LIST'] || []
                     if oneoff_list.length > 0
                       psu_data = get_oneoff_info(oneoff_list, 'OCW')
@@ -105,12 +103,14 @@ begin
                     ## There can be only one
                     o_inventory['oracle_crs_home'] = {
                       home_dir => {
-                        'ver'           => comp['VER'],
-                        'inst_time'     => comp['INSTALL_TIME'],
-                        'psu_ver'       => psu_ver,
-                        'psu_inst_time' => psu_inst_time,
+                        'ver'       => comp['VER'],
+                        'inst_time' => comp['INSTALL_TIME'],
                       }
                     }
+                    if defined?(psu_ver)
+                      o_inventory['oracle_crs_home'][home_dir]['psu_ver'] = psu_ver
+                      o_inventory['oracle_crs_home'][home_dir]['psu_inst_time'] = psu_inst_time
+                    end
                     ## Get the list of cluster nodes
                     if File.readable?(home_inv_props)
                       g_inventory = XmlSimple.xml_in(home_inv_props)
@@ -133,8 +133,6 @@ begin
                   ## Database Home
                   when 'oracle.server'
                     ## Get the PSU information
-                    psu_ver = ''
-                    psu_inst_time = ''
                     oneoff_list = h_inventory['ONEOFF_LIST'] || []
                     if oneoff_list.length > 0
                       psu_data = get_oneoff_info(oneoff_list, 'Database')
@@ -145,12 +143,16 @@ begin
                     end
                     o_inventory.has_key?('oracle_db_home') || o_inventory['oracle_db_home'] = {}
                     o_inventory['oracle_db_home'][home_dir] = {
-                      'ver'           => comp['VER'],
-                      'inst_time'     => comp['INSTALL_TIME'],
-                      'psu_ver'       => psu_ver,
-                      'psu_inst_time' => psu_inst_time,
-                      'sid'           => oratab[home_dir] || [],
+                      'ver'       => comp['VER'],
+                      'inst_time' => comp['INSTALL_TIME'],
                     }
+                    if defined?(psu_ver)
+                      o_inventory['oracle_db_home'][home_dir]['psu_ver'] = psu_ver
+                      o_inventory['oracle_db_home'][home_dir]['psu_inst_time'] = psu_inst_time
+                    end
+                    if oratab.has_key?(home_dir)
+                      o_inventory['oracle_db_home'][home_dir]['sid'] = oratab[home_dir]
+                    end
                     break
                   ## OMS Home
                   when 'oracle.sysman.top.oms'
