@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## Release 0.4.0
+
+- Feature: Added ASM SID to oracle_crs_home fact
+- No longer allowing facts to be created with empty string or array values
+
 ## Release 0.3.0
 
 - Feature: Added oracle_inventory_pointer fact

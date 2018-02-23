@@ -79,7 +79,7 @@ class { '::oracle_inventory':
 
 #### `oracle_crs_home`
 
-  * (Hash) CRS home information
+  * (Hash) CRS home information, including ASM ORACLE_SID from oratab
 
 #### `oracle_rac_nodes`
 
@@ -87,7 +87,7 @@ class { '::oracle_inventory':
 
 #### `oracle_db_home`
 
-  * (Hash) Database home information
+  * (Hash) Database home information, including ORACLE_SID(s) from oratab
 
 #### `oracle_oms_home`
 
