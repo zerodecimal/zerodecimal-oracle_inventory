@@ -186,7 +186,7 @@ The included facts are known to work on the following Oracle software versions. 
 * Database: 11g, 12c
 * Database Client: 11g, 12c
 * Enterprise Manager (and agent): 12c, 13c
-* E-Business Suite: 12.2
+* E-Business Suite: 12.2 (when there is a single pointer file and central inventory)
 * WebLogic: 11g, 12c
 
 ## Development
