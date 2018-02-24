@@ -31,7 +31,7 @@ elsif Facter.value(:osfamily) =~ /windows/i
 end
 
 ## Cache the DB home and SID information from /etc/oratab (including ASM)
-if File.readable?('/etc/oratab')
+if !oratab_file.nil? and File.readable?('/etc/oratab')
   File.open('/etc/oratab','r').each_line do |line|
     next unless line[/^[\+a-z]/i]
     entry = line.split(':')

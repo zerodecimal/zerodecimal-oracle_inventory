@@ -30,7 +30,7 @@ begin
   end
 
   ## Cache the DB home and SID information from /etc/oratab (including ASM)
-  if File.readable?(oratab_file)
+  if !oratab_file.nil? and File.readable?(oratab_file)
     File.open(oratab_file,'r').each_line do |line|
       next unless line[/^[\+a-z]/i]
       entry = line.split(':')
