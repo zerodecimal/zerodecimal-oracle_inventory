@@ -9,18 +9,19 @@ require 'time'
 include REXML
 
 ## Top scope variables
-etc_dir     = Facter.value(:kernel) =~ /linux/i   ? '/etc'
-            : Facter.value(:kernel) !~ /windows/i ? '/var/opt/oracle'
-            :                                       nil
+etc_dir     = (Facter.value(:kernel) =~ /linux/i)   ? '/etc'
+            : (Facter.value(:kernel) !~ /windows/i) ? '/var/opt/oracle'
+            :                                         nil
 inv_pointer = etc_dir.nil? ? nil : etc_dir + '/oraInst.loc'
 oratab_file = etc_dir.nil? ? nil : etc_dir + '/oratab'
 central_inv = nil
 oratab      = {}
 ## This is the hash that will contain the facts
-o_inventory = { 'oracle_inventory_pointer' => inv_pointer }
+o_inventory = {}
 
 ## Find the Central Inventory location if we are not on a Windows platform
 if !inv_pointer.nil? and File.readable?(inv_pointer)
+  o_inventory['oracle_inventory_pointer'] = inv_pointer
   IO.foreach(inv_pointer) do |line|
     line[/^inventory_loc=(.+)$/] && central_inv = $1 + '/ContentsXML/inventory.xml'
   end
@@ -43,7 +44,7 @@ end
 ## Parameters:
 ##   oneoff_list (array): the XML array
 ##   type (string): type of home (OCW, Database)
-def get_oneoff_info (oneoff_list, type)
+def get_oneoff_info(oneoff_list, type)
   times = []
   patches = {}
   data = {}
@@ -54,7 +55,7 @@ def get_oneoff_info (oneoff_list, type)
       times << patch['INSTALL_TIME']
     end
   end
-  if patches.size > 0
+  unless patches.empty?
     ## Here we have to sort the patches by install time to get the newest one
     if patches.size > 1
       ## This sorts the times array by date/time
@@ -76,7 +77,7 @@ if central_inv and File.readable?(central_inv)
   o_inventory['oracle_inventory'] = central_inv
   c_root = Document.new(File.new(central_inv)).root
   c_root.each_element('//HOME') do |home|
-    if home['REMOVED'].nil? and File.directory?home['LOC']
+    if home['REMOVED'].nil? and File.directory?(home['LOC'])
       home_dir       = home['LOC']
       home_inv_props = home_dir + '/inventory/ContentsXML/oraclehomeproperties.xml'
       home_inv_comps = home_dir + '/inventory/ContentsXML/comps.xml'
@@ -89,9 +90,9 @@ if central_inv and File.readable?(central_inv)
             ## Get the PSU information
             psu_ver, psu_inst_time = nil, nil
             oneoff_list = l_root.elements['ONEOFF_LIST']
-            if !oneoff_list.nil?
+            unless oneoff_list.nil?
               psu_data = get_oneoff_info(oneoff_list, 'OCW')
-              if psu_data.size > 0
+              unless psu_data.empty?
                 psu_ver = psu_data['ver']
                 psu_inst_time = psu_data['inst_time']
               end
@@ -103,7 +104,7 @@ if central_inv and File.readable?(central_inv)
                 'inst_time' => comp['INSTALL_TIME'],
               }
             }
-            if !psu_ver.nil?
+            unless psu_ver.nil?
               o_inventory['oracle_crs_home'][home_dir]['psu_ver'] = psu_ver
               o_inventory['oracle_crs_home'][home_dir]['psu_inst_time'] = psu_inst_time
             end
@@ -114,9 +115,9 @@ if central_inv and File.readable?(central_inv)
             if File.readable?(home_inv_props)
               all_nodes = []
               p_root = Document.new(File.new(home_inv_props)).root
-              if !p_root.elements['CLUSTER_INFO'].nil?
+              unless p_root.elements['CLUSTER_INFO'].nil?
                 node_list = p_root.elements['CLUSTER_INFO'].elements['NODE_LIST']
-                if !node_list.nil?
+                unless node_list.nil?
                   node_list.each_element('//NODE') do |node|
                     all_nodes << (node['NAME'])
                   end
@@ -130,9 +131,9 @@ if central_inv and File.readable?(central_inv)
             ## Get the PSU information
             psu_ver, psu_inst_time = nil, nil
             oneoff_list = l_root.elements['ONEOFF_LIST']
-            if !oneoff_list.nil?
+            unless oneoff_list.nil?
               psu_data = get_oneoff_info(oneoff_list, 'Database')
-              if psu_data.size > 0
+              unless psu_data.empty?
                 psu_ver = psu_data['ver']
                 psu_inst_time = psu_data['inst_time']
               end
@@ -142,7 +143,7 @@ if central_inv and File.readable?(central_inv)
               'ver'       => comp['VER'],
               'inst_time' => comp['INSTALL_TIME'],
             }
-            if !psu_ver.nil?
+            unless psu_ver.nil?
               o_inventory['oracle_db_home'][home_dir]['psu_ver'] = psu_ver
               o_inventory['oracle_db_home'][home_dir]['psu_inst_time'] = psu_inst_time
             end

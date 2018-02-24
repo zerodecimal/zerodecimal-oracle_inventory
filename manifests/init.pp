@@ -7,17 +7,17 @@
 # @example
 #   include oracle_inventory
 class oracle_inventory (
-  Boolean                    $manage_pointer = true,
+  Boolean                          $manage_pointer = true,
   Enum[
     'present',
     'absent'
-  ]                          $ensure         = 'present',
-  String                     $file_owner     = 'root',
-  String                     $file_group     = 'root',
-  Stdlib::Filemode           $file_mode      = '0644',
-  Optional[Stdlib::UnixPath] $pointer_file   = $::facts[oracle_inventory_pointer],
-  Stdlib::UnixPath           $inventory_dir  = '/u01/app/oraInventory',
-  String                     $inst_group     = 'oinstall',
+  ]                                $ensure         = 'present',
+  String                           $file_owner     = 'root',
+  String                           $file_group     = 'root',
+  Oracle_inventory::Mode           $file_mode      = '0644',
+  Optional[Oracle_inventory::Path] $pointer_file   = $::facts[oracle_inventory_pointer],
+  Stdlib::UnixPath                 $inventory_dir  = '/u01/app/oraInventory',
+  String                           $inst_group     = 'oinstall',
 ){
 
   ## Take care of Ruby GEM dependency for fact script
