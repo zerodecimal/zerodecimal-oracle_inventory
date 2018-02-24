@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## Release 0.4.3
+
+- Bugfix: Fixed Windows bug with nil oratab_file variable
+
+## Release 0.4.2
+
+- Bugfix: Fixed Windows bug with oracle_inventory_pointer fact
+
+## Release 0.4.1
+
+- Bugfix: Updated oratab location for Unix servers
+
 ## Release 0.4.0
 
 - Feature: Added ASM SID to oracle_crs_home fact
