@@ -8,22 +8,25 @@ require 'time'
 ## Include the REXML namespace
 include REXML
 
-## Variable declarations
-ora_inv_loc = Facter.value(:kernel) =~ /linux/i   ? '/etc/oraInst.loc'
-            : Facter.value(:kernel) !~ /windows/i ? '/var/opt/oracle/oraInst.loc'
+## Top scope variables
+etc_dir     = Facter.value(:kernel) =~ /linux/i   ? '/etc'
+            : Facter.value(:kernel) !~ /windows/i ? '/var/opt/oracle'
             :                                       nil
-ora_inv     = nil
-o_inventory = { 'oracle_inventory_pointer' => ora_inv_loc }
+inv_pointer = etc_dir.nil? ? nil : etc_dir + '/oraInst.loc'
+oratab_file = etc_dir.nil? ? nil : etc_dir + '/oratab'
+central_inv = nil
 oratab      = {}
+## This is the hash that will contain the facts
+o_inventory = { 'oracle_inventory_pointer' => inv_pointer }
 
 ## Find the Central Inventory location if we are not on a Windows platform
-if !ora_inv_loc.nil? and File.readable?(ora_inv_loc)
-  IO.foreach(ora_inv_loc) do |line|
-    line[/^inventory_loc=(.+)$/] && ora_inv = $1 + '/ContentsXML/inventory.xml'
+if !inv_pointer.nil? and File.readable?(inv_pointer)
+  IO.foreach(inv_pointer) do |line|
+    line[/^inventory_loc=(.+)$/] && central_inv = $1 + '/ContentsXML/inventory.xml'
   end
 ## On Windows we already know where it is
 elsif Facter.value(:osfamily) =~ /windows/i
-  ora_inv = 'C:/Program Files/Oracle/Inventory/ContentsXML/inventory.xml'
+  central_inv = 'C:/Program Files/Oracle/Inventory/ContentsXML/inventory.xml'
 end
 
 ## Cache the DB home and SID information from /etc/oratab (including ASM)
@@ -69,9 +72,9 @@ return data
 end
 
 ## Parse the Central Inventory and begin setting the Fact variables
-if ora_inv and File.readable?(ora_inv)
-  o_inventory['oracle_inventory'] = ora_inv
-  c_root = Document.new(File.new(ora_inv)).root
+if central_inv and File.readable?(central_inv)
+  o_inventory['oracle_inventory'] = central_inv
+  c_root = Document.new(File.new(central_inv)).root
   c_root.each_element('//HOME') do |home|
     if home['REMOVED'].nil? and File.directory?home['LOC']
       home_dir       = home['LOC']
