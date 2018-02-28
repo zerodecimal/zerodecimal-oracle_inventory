@@ -1,15 +1,14 @@
 # oracle_inventory.rb
 
 begin
-
   ## Required GEMs
   require 'facter'
   require 'xmlsimple'
   require 'time'
 
   ## Top scope variables
-  etc_dir     = (Facter.value(:kernel) =~ /linux/i)   ? '/etc'
-              : (Facter.value(:kernel) !~ /windows/i) ? '/var/opt/oracle'
+  etc_dir     = (Facter.value(:kernel) =~ %r{linux}i)   ? '/etc'
+              : (Facter.value(:kernel) !~ %r{windows}i) ? '/var/opt/oracle'
               :                                         nil
   inv_pointer = etc_dir.nil? ? nil : etc_dir + '/oraInst.loc'
   oratab_file = etc_dir.nil? ? nil : etc_dir + '/oratab'
@@ -22,19 +21,19 @@ begin
   if !inv_pointer.nil? and File.readable?(inv_pointer)
     o_inventory['oracle_inventory_pointer'] = inv_pointer
     IO.foreach(inv_pointer) do |line|
-      line[/^inventory_loc=(.+)$/] && central_inv = $1 + '/ContentsXML/inventory.xml'
+      line[%r{^inventory_loc=(.+)$}] && central_inv = Regexp.last_match[1] + '/ContentsXML/inventory.xml'
     end
   ## On Windows we already know where it is
-  elsif Facter.value(:osfamily) =~ /windows/i
+  elsif Facter.value(:osfamily) =~ %r{windows}i
     central_inv = 'C:/Program Files/Oracle/Inventory/ContentsXML/inventory.xml'
   end
 
   ## Cache the DB home and SID information from /etc/oratab (including ASM)
   if !oratab_file.nil? and File.readable?(oratab_file)
-    File.open(oratab_file,'r').each_line do |line|
-      next unless line[/^[\+a-z]/i]
+    File.open(oratab_file, 'r').each_line do |line|
+      next unless line[%r{^[\+a-z]}i]
       entry = line.split(':')
-      oratab.has_key?(entry[1]) || oratab[entry[1]] = []
+      oratab.key?(entry[1]) || oratab[entry[1]] = []
       oratab[entry[1]] << entry[0] && oratab[entry[1]].sort!
     end
   end
@@ -49,8 +48,8 @@ begin
     data = {}
     oneoff = oneoff_list[0]['ONEOFF'] || []
     oneoff.each do |patch|
-      if patch['DESC'][0][/^#{type} Patch Set Update : (\S+)/]
-        patches[$1] = patch['INSTALL_TIME']
+      if patch['DESC'][0][%r{^#{type} Patch Set Update : (\S+)}]
+        patches[Regexp.last_match[1]] = patch['INSTALL_TIME']
         times << patch['INSTALL_TIME']
       end
     end
@@ -58,9 +57,9 @@ begin
       ## Here we have to sort the patches by install time to get the newest one
       if patches.size > 1
         ## This sorts the times array by date/time
-        sorted = times.sort_by {|t| Time.parse(t)}
+        sorted = times.sort_by { |t| Time.parse(t) }
         ## This reduces the patches hash to the newest one
-        patches.select! {|k,v| v == sorted[-1]}
+        patches.select! { |_k, v| v == sorted[-1] }
         data['ver'] = patches.keys[0]
         data['inst_time'] = patches.values[0]
       else
@@ -68,7 +67,7 @@ begin
         data['inst_time'] = patches.values[0]
       end
     end
-  return data
+    data
   end
 
   ## Parse the Central Inventory and begin setting the Fact variables
@@ -85,7 +84,7 @@ begin
             if File.readable?(home_inv_comps)
               h_inventory = XmlSimple.xml_in(home_inv_comps)
               all_comps = h_inventory['TL_LIST'][0]['COMP'] || []
-              if all_comps.length > 0
+              unless all_comps.empty?
                 all_comps.each do |comp|
                   case comp['NAME']
                   ## CRS Home *note* This can also be found in /etc/oracle/olr.loc
@@ -93,7 +92,7 @@ begin
                     ## Get the PSU information
                     psu_ver, psu_inst_time = nil, nil
                     oneoff_list = h_inventory['ONEOFF_LIST'] || []
-                    if oneoff_list.length > 0
+                    unless oneoff_list.empty?
                       psu_data = get_oneoff_info(oneoff_list, 'OCW')
                       unless psu_data.empty?
                         psu_ver = psu_data['ver']
@@ -105,28 +104,28 @@ begin
                       home_dir => {
                         'ver'       => comp['VER'],
                         'inst_time' => comp['INSTALL_TIME'],
-                      }
+                      },
                     }
                     unless psu_ver.nil?
                       o_inventory['oracle_crs_home'][home_dir]['psu_ver'] = psu_ver
                       o_inventory['oracle_crs_home'][home_dir]['psu_inst_time'] = psu_inst_time
                     end
-                    if oratab.has_key?(home_dir)
+                    if oratab.key?(home_dir)
                       o_inventory['oracle_crs_home'][home_dir]['sid'] = oratab[home_dir][0]
                     end
                     ## Get the list of cluster nodes
                     if File.readable?(home_inv_props)
                       g_inventory = XmlSimple.xml_in(home_inv_props)
                       cluster_info = g_inventory['CLUSTER_INFO'] || []
-                      if cluster_info.length > 0
+                      unless cluster_info.empty?
                         all_nodes = []
                         node_list = cluster_info[0]['NODE_LIST'] || []
-                        if node_list.length > 0
+                        unless node_list.empty?
                           node_list[0]['NODE'].each do |node|
                             all_nodes << (node['NAME'])
                           end
                         end
-                        if all_nodes.length > 0
+                        unless all_nodes.empty?
                           o_inventory['oracle_rac_nodes'] = all_nodes.sort
                         end
                       end
@@ -138,14 +137,14 @@ begin
                     ## Get the PSU information
                     psu_ver, psu_inst_time = nil, nil
                     oneoff_list = h_inventory['ONEOFF_LIST'] || []
-                    if oneoff_list.length > 0
+                    unless oneoff_list.empty?
                       psu_data = get_oneoff_info(oneoff_list, 'Database')
                       unless psu_data.empty?
                         psu_ver = psu_data['ver']
                         psu_inst_time = psu_data['inst_time']
                       end
                     end
-                    o_inventory.has_key?('oracle_db_home') || o_inventory['oracle_db_home'] = {}
+                    o_inventory.key?('oracle_db_home') || o_inventory['oracle_db_home'] = {}
                     o_inventory['oracle_db_home'][home_dir] = {
                       'ver'       => comp['VER'],
                       'inst_time' => comp['INSTALL_TIME'],
@@ -154,7 +153,7 @@ begin
                       o_inventory['oracle_db_home'][home_dir]['psu_ver'] = psu_ver
                       o_inventory['oracle_db_home'][home_dir]['psu_inst_time'] = psu_inst_time
                     end
-                    if oratab.has_key?(home_dir)
+                    if oratab.key?(home_dir)
                       o_inventory['oracle_db_home'][home_dir]['sid'] = oratab[home_dir]
                     end
                     break
@@ -165,7 +164,7 @@ begin
                       home_dir => {
                         'ver'       => comp['VER'],
                         'inst_time' => comp['INSTALL_TIME'],
-                      }
+                      },
                     }
                     break
                   ## EM Agent Home
@@ -175,22 +174,22 @@ begin
                       home_dir => {
                         'ver'       => comp['VER'],
                         'inst_time' => comp['INSTALL_TIME'],
-                      }
+                      },
                     }
                     break
                   ## EBS Home
                   when 'oracle.apps.ebs'
                     ## There can be only one
                     o_inventory['oracle_ebs_home'] = {
-                      home_dir.sub(/\/fs.*/, '') => {
+                      home_dir.sub(%r{\/fs.*}, '') => {
                         'ver'       => comp['VER'],
                         'inst_time' => comp['INSTALL_TIME'],
-                      }
+                      },
                     }
                     break
                   ## WebLogic Home
-                  when /^oracle\.(wls\.clients|coherence)$/
-                    o_inventory.has_key?('oracle_wls_home') || o_inventory['oracle_wls_home'] = {}
+                  when %r{^oracle\.(wls\.clients|coherence)$}
+                    o_inventory.key?('oracle_wls_home') || o_inventory['oracle_wls_home'] = {}
                     o_inventory['oracle_wls_home'][home_dir] = {
                       'ver'       => comp['VER'],
                       'inst_time' => comp['INSTALL_TIME'],
@@ -198,7 +197,7 @@ begin
                     break
                   ## Client Home
                   when 'oracle.client'
-                    o_inventory.has_key?('oracle_client_home') || o_inventory['oracle_client_home'] = {}
+                    o_inventory.key?('oracle_client_home') || o_inventory['oracle_client_home'] = {}
                     o_inventory['oracle_client_home'][home_dir] = {
                       'ver'       => comp['VER'],
                       'inst_time' => comp['INSTALL_TIME'],
@@ -226,13 +225,10 @@ begin
       end
     end
   end
-
 rescue Exception => e
-  # The required file will not be there the first time this fact is loaded
-  if e.message[/cannot load such file/i]
-    #Puppet.warning e.message
+  # The required gem will not be there the first time this fact is loaded
+  if e.message[%r{cannot load such file}i]
     Puppet.info e.message
-    ""
   else
     raise
   end

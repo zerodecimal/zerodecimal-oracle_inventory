@@ -9,8 +9,8 @@ require 'time'
 include REXML
 
 ## Top scope variables
-etc_dir     = (Facter.value(:kernel) =~ /linux/i)   ? '/etc'
-            : (Facter.value(:kernel) !~ /windows/i) ? '/var/opt/oracle'
+etc_dir     = (Facter.value(:kernel) =~ %r{linux}i)   ? '/etc'
+            : (Facter.value(:kernel) !~ %r{windows}i) ? '/var/opt/oracle'
             :                                         nil
 inv_pointer = etc_dir.nil? ? nil : etc_dir + '/oraInst.loc'
 oratab_file = etc_dir.nil? ? nil : etc_dir + '/oratab'
@@ -23,19 +23,19 @@ o_inventory = {}
 if !inv_pointer.nil? and File.readable?(inv_pointer)
   o_inventory['oracle_inventory_pointer'] = inv_pointer
   IO.foreach(inv_pointer) do |line|
-    line[/^inventory_loc=(.+)$/] && central_inv = $1 + '/ContentsXML/inventory.xml'
+    line[%r{^inventory_loc=(.+)$}] && central_inv = Regexp.last_match[1] + '/ContentsXML/inventory.xml'
   end
 ## On Windows we already know where it is
-elsif Facter.value(:osfamily) =~ /windows/i
+elsif Facter.value(:osfamily) =~ %r{windows}i
   central_inv = 'C:/Program Files/Oracle/Inventory/ContentsXML/inventory.xml'
 end
 
 ## Cache the DB home and SID information from /etc/oratab (including ASM)
 if !oratab_file.nil? and File.readable?('/etc/oratab')
-  File.open('/etc/oratab','r').each_line do |line|
-    next unless line[/^[\+a-z]/i]
+  File.open('/etc/oratab', 'r').each_line do |line|
+    next unless line[%r{^[\+a-z]}i]
     entry = line.split(':')
-    oratab.has_key?(entry[1]) || oratab[entry[1]] = []
+    oratab.key?(entry[1]) || oratab[entry[1]] = []
     oratab[entry[1]] << entry[0] && oratab[entry[1]].sort!
   end
 end
@@ -50,8 +50,8 @@ def get_oneoff_info(oneoff_list, type)
   data = {}
   oneoff_list.each_element('//ONEOFF') do |patch|
     patch.elements['DESC'].text.nil? && next
-    if patch.elements['DESC'].text[/^#{type} Patch Set Update : (\S+)/]
-      patches[$1] = patch['INSTALL_TIME']
+    if patch.elements['DESC'].text[%r{^#{type} Patch Set Update : (\S+)}]
+      patches[Regexp.last_match[1]] = patch['INSTALL_TIME']
       times << patch['INSTALL_TIME']
     end
   end
@@ -59,9 +59,9 @@ def get_oneoff_info(oneoff_list, type)
     ## Here we have to sort the patches by install time to get the newest one
     if patches.size > 1
       ## This sorts the times array by date/time
-      sorted = times.sort_by {|t| Time.parse(t)}
+      sorted = times.sort_by { |t| Time.parse(t) }
       ## This reduces the patches hash to the newest one
-      patches.select! {|k,v| v == sorted[-1]}
+      patches.select! { |_k, v| v == sorted[-1] }
       data['ver'] = patches.keys[0]
       data['inst_time'] = patches.values[0]
     else
@@ -69,7 +69,6 @@ def get_oneoff_info(oneoff_list, type)
       data['inst_time'] = patches.values[0]
     end
   end
-return data
 end
 
 ## Parse the Central Inventory and begin setting the Fact variables
@@ -102,13 +101,13 @@ if central_inv and File.readable?(central_inv)
               home_dir => {
                 'ver'       => comp['VER'],
                 'inst_time' => comp['INSTALL_TIME'],
-              }
+              },
             }
             unless psu_ver.nil?
               o_inventory['oracle_crs_home'][home_dir]['psu_ver'] = psu_ver
               o_inventory['oracle_crs_home'][home_dir]['psu_inst_time'] = psu_inst_time
             end
-            if oratab.has_key?(home_dir)
+            if oratab.key?(home_dir)
               o_inventory['oracle_crs_home'][home_dir]['sid'] = oratab[home_dir][0]
             end
             ## Get the list of cluster nodes
@@ -138,7 +137,7 @@ if central_inv and File.readable?(central_inv)
                 psu_inst_time = psu_data['inst_time']
               end
             end
-            o_inventory.has_key?('oracle_db_home') || o_inventory['oracle_db_home'] = {}
+            o_inventory.key?('oracle_db_home') || o_inventory['oracle_db_home'] = {}
             o_inventory['oracle_db_home'][home_dir] = {
               'ver'       => comp['VER'],
               'inst_time' => comp['INSTALL_TIME'],
@@ -147,7 +146,7 @@ if central_inv and File.readable?(central_inv)
               o_inventory['oracle_db_home'][home_dir]['psu_ver'] = psu_ver
               o_inventory['oracle_db_home'][home_dir]['psu_inst_time'] = psu_inst_time
             end
-            if oratab.has_key?(home_dir)
+            if oratab.key?(home_dir)
               o_inventory['oracle_db_home'][home_dir]['sid'] = oratab[home_dir]
             end
             break
@@ -158,7 +157,7 @@ if central_inv and File.readable?(central_inv)
               home_dir => {
                 'ver'       => comp['VER'],
                 'inst_time' => comp['INSTALL_TIME'],
-              }
+              },
             }
             break
           ## EM Agent Home
@@ -168,22 +167,22 @@ if central_inv and File.readable?(central_inv)
               home_dir => {
                 'ver'       => comp['VER'],
                 'inst_time' => comp['INSTALL_TIME'],
-              }
+              },
             }
             break
           ## EBS Home
           when 'oracle.apps.ebs'
             ## There can be only one
             o_inventory['oracle_ebs_home'] = {
-              home_dir.sub(/\/fs.*/, '') => {
+              home_dir.sub(%r{\/fs.*}, '') => {
                 'ver'       => comp['VER'],
                 'inst_time' => comp['INSTALL_TIME'],
-              }
+              },
             }
             break
           ## WebLogic Home
-          when /^oracle\.(wls\.clients|coherence)$/
-            o_inventory.has_key?('oracle_wls_home') || o_inventory['oracle_wls_home'] = {}
+          when %r{^oracle\.(wls\.clients|coherence)$}
+            o_inventory.key?('oracle_wls_home') || o_inventory['oracle_wls_home'] = {}
             o_inventory['oracle_wls_home'][home_dir] = {
               'ver'       => comp['VER'],
               'inst_time' => comp['INSTALL_TIME'],
@@ -191,7 +190,7 @@ if central_inv and File.readable?(central_inv)
             break
           ## Client Home
           when 'oracle.client'
-            o_inventory.has_key?('oracle_client_home') || o_inventory['oracle_client_home'] = {}
+            o_inventory.key?('oracle_client_home') || o_inventory['oracle_client_home'] = {}
             o_inventory['oracle_client_home'][home_dir] = {
               'ver'       => comp['VER'],
               'inst_time' => comp['INSTALL_TIME'],
