@@ -16,7 +16,7 @@ class oracle_inventory (
   String                           $file_group     = 'root',
   Oracle_inventory::Mode           $file_mode      = '0644',
   Optional[Oracle_inventory::Path] $pointer_file   = $::facts[oracle_inventory_pointer],
-  Stdlib::UnixPath                 $inventory_dir  = '/u01/app/oraInventory',
+  Oracle_inventory::Path           $inventory_dir  = '/u01/app/oraInventory',
   String                           $inst_group     = 'oinstall',
 ){
 

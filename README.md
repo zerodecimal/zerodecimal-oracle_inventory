@@ -21,6 +21,8 @@ The inventory parser begins with the central inventory XML file, then inspects a
 
 These facts can be useful in configuring servers with Oracle products installed. For example, when the Puppet agent runs after a database home is installed, a fact called "oracle_db_home" is created and can then be used to set the oracle user's environment.
 
+The facts can also be useful for inventory reports. For example, to see the latest patch set update (PSU) applied to all the databases in an environment.
+
 *Puppet version 4.3 is required because this module makes use of features such as strong data typing.*
 
 ## Setup
