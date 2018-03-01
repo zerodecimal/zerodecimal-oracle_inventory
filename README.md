@@ -1,5 +1,10 @@
+# Oracle_inventory module for Puppet
 
-# oracle_inventory
+[![License](https://img.shields.io/github/license/zerodecimal/zerodecimal-oracle_inventory.svg)](https://github.com/zerodecimal/zerodecimal-oracle_inventory/blob/master/LICENSE)
+[![Build Status](https://travis-ci.org/zerodecimal/zerodecimal-oracle_inventory.svg?branch=master)](https://travis-ci.org/zerodecimal/zerodecimal-oracle_inventory)
+[![Puppet Forge](https://img.shields.io/puppetforge/v/zerodecimal/oracle_inventory.svg)](https://forge.puppetlabs.com/zerodecimal/oracle_inventory)
+[![Puppet Forge - downloads](https://img.shields.io/puppetforge/dt/zerodecimal/oracle_inventory.svg)](https://forge.puppetlabs.com/zerodecimal/oracle_inventory)
+[![Puppet Forge - scores](https://img.shields.io/puppetforge/f/zerodecimal/oracle_inventory.svg)](https://forge.puppetlabs.com/zerodecimal/oracle_inventory)
 
 #### Table of Contents
 
