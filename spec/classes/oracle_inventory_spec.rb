@@ -10,17 +10,14 @@ describe 'oracle_inventory' do
       context 'without any parameters' do
         it { is_expected.to compile.with_all_deps }
 
-        unless os.match(%r{windows}i)
-          it { is_expected.to contain_class('oracle_inventory::inventory_pointer') }
-        end
+        os =~ %r{windows}i or it { is_expected.to contain_class('oracle_inventory::inventory_pointer') }
       end
 
-      context 'not managing pointer file' do
-        let(:params) { {'manage_pointer' => false} }
+      context 'without managing pointer file' do
+        let(:params) { { 'manage_pointer' => false } }
 
         it { is_expected.not_to contain_class('oracle_inventory::inventory_pointer') }
       end
     end
   end
-
 end

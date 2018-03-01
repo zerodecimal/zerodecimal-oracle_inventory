@@ -1,6 +1,6 @@
 {
   "name": "zerodecimal-oracle_inventory",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "author": "Eric Miller",
   "summary": "An Oracle inventory parser that creates inventory-based facts, and a class that manages the inventory pointer file.",
   "license": "Apache-2.0",
