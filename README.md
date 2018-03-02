@@ -2,9 +2,9 @@
 
 [![License](https://img.shields.io/github/license/zerodecimal/zerodecimal-oracle_inventory.svg)](https://github.com/zerodecimal/zerodecimal-oracle_inventory/blob/master/LICENSE)
 [![Build Status](https://travis-ci.org/zerodecimal/zerodecimal-oracle_inventory.svg?branch=master)](https://travis-ci.org/zerodecimal/zerodecimal-oracle_inventory)
-[![Puppet Forge](https://img.shields.io/puppetforge/v/zerodecimal/oracle_inventory.svg)](https://forge.puppetlabs.com/zerodecimal/oracle_inventory)
-[![Puppet Forge - downloads](https://img.shields.io/puppetforge/dt/zerodecimal/oracle_inventory.svg)](https://forge.puppetlabs.com/zerodecimal/oracle_inventory)
-[![Puppet Forge - scores](https://img.shields.io/puppetforge/f/zerodecimal/oracle_inventory.svg)](https://forge.puppetlabs.com/zerodecimal/oracle_inventory)
+[![Puppet Forge Version](https://img.shields.io/puppetforge/v/zerodecimal/oracle_inventory.svg)](https://forge.puppet.com/zerodecimal/oracle_inventory)
+[![Puppet Forge Downloads](https://img.shields.io/puppetforge/dt/zerodecimal/oracle_inventory.svg)](https://forge.puppet.com/zerodecimal/oracle_inventory)
+[![Puppet Forge Score](https://img.shields.io/puppetforge/f/zerodecimal/oracle_inventory.svg)](https://forge.puppet.com/zerodecimal/oracle_inventory)
 
 #### Table of Contents
 
@@ -198,4 +198,8 @@ The included facts are known to work on the following Oracle software versions. 
 
 ## Development
 
-* Contributions are always welcome - please submit a pull request or issue on [GitHub](https://github.com/zerodecimal/zerodecimal-oracle_inventory).
+Contributions are always welcome - please submit a pull request or issue on [GitHub](https://github.com/zerodecimal/zerodecimal-oracle_inventory).
+
+## Contributors
+
+The list of contributors can be found at: [https://github.com/zerodecimal/zerodecimal-oracle_inventory/graphs/contributors](https://github.com/zerodecimal/zerodecimal-oracle_inventory/graphs/contributors).
