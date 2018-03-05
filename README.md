@@ -2,11 +2,13 @@
 
 [![License](https://img.shields.io/github/license/zerodecimal/zerodecimal-oracle_inventory.svg)](https://github.com/zerodecimal/zerodecimal-oracle_inventory/blob/master/LICENSE)
 [![Build Status](https://travis-ci.org/zerodecimal/zerodecimal-oracle_inventory.svg?branch=master)](https://travis-ci.org/zerodecimal/zerodecimal-oracle_inventory)
+<!---
 [![Puppet Forge Version](https://img.shields.io/puppetforge/v/zerodecimal/oracle_inventory.svg)](https://forge.puppet.com/zerodecimal/oracle_inventory)
 [![Puppet Forge Downloads](https://img.shields.io/puppetforge/dt/zerodecimal/oracle_inventory.svg)](https://forge.puppet.com/zerodecimal/oracle_inventory)
 [![Puppet Forge Score](https://img.shields.io/puppetforge/f/zerodecimal/oracle_inventory.svg)](https://forge.puppet.com/zerodecimal/oracle_inventory)
+--->
 
-#### Table of Contents
+## Table of Contents
 
 1. [Description](#description)
 2. [Setup - The basics of getting started with oracle_inventory](#setup)
@@ -44,11 +46,11 @@ Install the oracle_inventory module to add the facts and classes to your environ
 
 puppetlabs/stdlib >= 4.13.1 is required.
 
-### Beginning with oracle_inventory  
+### Beginning with oracle_inventory
 
 The module can simply be installed with a Puppetfile entry and the facts will be available (as long as the xml-simple gem is installed). To manage the inventory pointer file, include the oracle_inventory class in some profile manifest. To accept the default parameters:
 
-```
+```puppet
 include ::oracle_inventory
 ```
 
@@ -56,7 +58,7 @@ include ::oracle_inventory
 
 To manage the Oracle inventory pointer file with non-default parameters, declare the class in this format:
 
-```
+```puppet
 class { '::oracle_inventory':
   file_owner    => 'oracle',
   file_group    => 'oinstall',
@@ -66,7 +68,7 @@ class { '::oracle_inventory':
 
 To install the xml-simple gem and use the facts, but not manage the Oracle inventory pointer file, declare the class as such:
 
-```
+```puppet
 class { '::oracle_inventory':
   manage_pointer => false,
 }
@@ -78,100 +80,135 @@ class { '::oracle_inventory':
 
 #### `oracle_inventory_pointer`
 
-  * (String) Central inventory pointer file location
+Description: Central inventory pointer file location
+
+Datatype: String
 
 #### `oracle_inventory`
 
-  * (String) Central inventory file location
+Description: Central inventory file location
+
+Datatype: String
 
 #### `oracle_crs_home`
 
-  * (Hash) CRS home information, including ASM ORACLE_SID from oratab
+Description: CRS home information, including ASM ORACLE_SID from oratab
+
+Datatype: Hash
 
 #### `oracle_rac_nodes`
 
-  * (Array) List of RAC cluster nodes
+Description: List of RAC cluster nodes
+
+Datatype: Array
 
 #### `oracle_db_home`
 
-  * (Hash) Database home information, including ORACLE_SID(s) from oratab
+Description: Database home information, including ORACLE_SID(s) from oratab
+
+Datatype: Hash
 
 #### `oracle_oms_home`
 
-  * (Hash) OMS (Enterprise Manager) home information
+Description: OMS (Enterprise Manager) home information
+
+Datatype: Hash
 
 #### `oracle_em_agent_home`
 
-  * (Hash) Enterprise Manager Agent home information
+Description: Enterprise Manager Agent home information
+
+Datatype: Hash
 
 #### `oracle_ebs_home`
 
-  * (Hash) EBS application home information
+Description: EBS application (Fusion Middleware) home information
+
+Datatype: Hash
 
 #### `oracle_wls_home`
 
-  * (Hash) WebLogic home information
+Description: WebLogic home information
+
+Datatype: Hash
 
 #### `oracle_client_home`
 
-  * (Hash) Database Client home information
+Description: Database Client home information
+
+Datatype: Hash
 
 ### Classes
 
 #### `oracle_inventory`
 
-  * The main class. Any other classes are declared internally.
+* The main class. Any other classes are declared internally.
 
-**Paramters**
+#### Parameters
 
-`manage_pointer`
-Specifies whether or not to manage the inventory pointer file.
+#### `manage_pointer`
 
-Boolean
+Description: Specifies whether or not to manage the inventory pointer file.
 
-Default value: true
+Datatype: Boolean
 
-`ensure`
-Specifies whether the inventory pointer file should exist.
+Default Value: true
 
-Values: [ 'present', 'absent' ]
+#### `ensure`
 
-Default value 'present'
+Description: Specifies whether the inventory pointer file should exist.
 
-`file_owner`
-Specifies the owner of the inventory pointer file.
+Datatype: String [ 'present', 'absent' ]
 
-Values: String
+Default Value: 'present'
 
-Default value: 'root'
+#### `file_owner`
 
-`file_group`
-Specifies the group of the inventory pointer file.
+Description: Specifies the owner of the inventory pointer file.
 
-Values: String
+Datatype: String
 
-Default value: 'root'
+Default Value: 'root'
 
-`file_mode`
-Specifies the mode of the inventory pointer file.
+#### `file_group`
 
-Values: Valid octal file mode string
+Description: Specifies the group of the inventory pointer file.
 
-Default value: '0644'
+Datatype: String
 
-`inventory_dir`
-Specifies the path to the central inventory directory.
+Default Value: 'root'
 
-Values: Valid file path string
+#### `file_mode`
 
-Default value: '/u01/app/oraInventory'
+Description: Specifies the mode of the inventory pointer file.
 
-`inst_group`
-Specifies the Oracle install owner group.
+Datatype: String (valid octal file mode)
 
-Values: String
+Default Value: '0644'
 
-Default value: 'oinstall'
+#### `pointer_file`
+
+Description: Specifies the path to the inventory pointer file (will not override the fact).
+
+Datatype: String (valid file path)
+
+Default Value: $facts[oracle_invetory_pointer]
+
+#### `inventory_dir`
+
+Description: Specifies the path to the central inventory directory.
+
+Datatype: String (valid file path)
+
+Default Value: '/u01/app/oraInventory'
+
+#### `inst_group`
+
+Description: Specifies the Oracle install owner group.
+
+Datatype: String
+
+Default Value: 'oinstall'
 
 ## Limitations
 
