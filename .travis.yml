@@ -7,6 +7,7 @@ before_install:
 - rm Gemfile.lock || true
 - gem update --system
 - gem update bundler
+- gem install json_pure
 - gem --version
 - bundle -v
 script:
