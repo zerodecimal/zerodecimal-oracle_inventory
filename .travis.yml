@@ -7,7 +7,6 @@ before_install:
 - rm Gemfile.lock || true
 - gem update --system
 - gem update bundler
-- gem install json_pure
 - gem --version
 - bundle -v
 script:
@@ -28,7 +27,6 @@ matrix:
     bundler_args: "--without system_tests"
     env: PUPPET_VERSION="~> 5.0" CHECK=metadata_lint
   - rvm: 2.4.2
-    bundler_args: "--without system_tests"
     env: PUPPET_VERSION="~> 5.0" CHECK=build DEPLOY_TO_FORGE=yes
 branches:
   only:
