@@ -15,19 +15,14 @@ matrix:
   fast_finish: true
   include:
   - rvm: 2.1.9
-    bundler_args: --without system_tests development release
     env: PUPPET_VERSION="~> 4.0" CHECK=spec
   - rvm: 2.4.2
-    bundler_args: --without system_tests development release
     env: PUPPET_VERSION="~> 5.0" CHECK=spec
   - rvm: 2.4.2
-    bundler_args: --without system_tests development release
     env: PUPPET_VERSION="~> 5.0" CHECK="syntax lint"
   - rvm: 2.4.2
-    bundler_args: --without system_tests development release
     env: PUPPET_VERSION="~> 5.0" CHECK=metadata_lint
   - rvm: 2.4.2
-    bundler_args: --without system_tests development release
     env: PUPPET_VERSION="~> 5.0" CHECK=build DEPLOY_TO_FORGE=yes
 branches:
   only:
