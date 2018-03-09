@@ -14,15 +14,15 @@ script:
 matrix:
   fast_finish: true
   include:
-  - rvm: 2.1.9
+  - rvm: 2.1.2
     env: PUPPET_VERSION="~> 4.0" CHECK=spec
-  - rvm: 2.4.1
+  - rvm: 2.4.2
     env: PUPPET_VERSION="~> 5.0" CHECK=spec
-  - rvm: 2.4.1
+  - rvm: 2.4.2
     env: PUPPET_VERSION="~> 5.0" CHECK="syntax lint"
-  - rvm: 2.4.1
+  - rvm: 2.4.2
     env: PUPPET_VERSION="~> 5.0" CHECK=metadata_lint
-  - rvm: 2.4.1
+  - rvm: 2.4.2
     env: PUPPET_VERSION="~> 5.0" CHECK=build DEPLOY_TO_FORGE=yes
 branches:
   only:
