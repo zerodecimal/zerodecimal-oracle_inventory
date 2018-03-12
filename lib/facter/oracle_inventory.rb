@@ -114,6 +114,18 @@ begin
                   end
                   g_inventory.clear
                 end
+                ## Get the SCAN name
+                home_global_vars = home_dir + '/inventory/globalvariables/oracle.crs/globalvariables.xml'
+                if File.readable?(home_global_vars)
+                  g_vars = XmlSimple.xml_in(home_global_vars)
+                  domain = Facter.value(:domain)
+                  g_vars['VAR'].each do |v|
+                    if v['NAME'] == 'oracle_install_crs_SCANName'
+                      o_inventory['oracle_scan_name'] = v['VALUE'].sub(/^([\w\d-]+).*$/, '\1.'+domain)
+                      break
+                    end
+                  end
+                end
                 break
               ## Database Home
               when 'oracle.server'
