@@ -102,6 +102,12 @@ Description: List of RAC cluster nodes
 
 Datatype: Array
 
+#### `oracle_scan_name`
+
+Description: Single Client Access Name for RAC clusters
+
+Datatype: String
+
 #### `oracle_db_home`
 
 Description: Database home information, including ORACLE_SID(s) from oratab
