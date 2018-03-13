@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## Release 0.4.8
+
+- Added documentation for oracle_scan_name fact
+- Minor update to example script
+
 ## Release 0.4.7
 
 - Feature: Added oracle_scan_name fact
