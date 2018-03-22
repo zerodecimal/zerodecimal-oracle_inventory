@@ -3,31 +3,31 @@ dist: trusty
 language: ruby
 cache: bundler
 before_install:
-- bundle -v
-- rm Gemfile.lock || true
-- gem update --system
-- gem update bundler
-- gem --version
-- bundle -v
+  - bundle -v
+  - rm Gemfile.lock || true
+  - gem update --system
+  - gem update bundler
+  - gem --version
+  - bundle -v
 script:
-- bundle exec rake $CHECK
+  - bundle exec rake $CHECK
 matrix:
   fast_finish: true
   include:
-  - rvm: 2.1.2
-    env: PUPPET_VERSION="~> 4.0" CHECK=spec
-  - rvm: 2.4.2
-    env: PUPPET_VERSION="~> 5.0" CHECK=spec
-  - rvm: 2.4.2
-    env: PUPPET_VERSION="~> 5.0" CHECK="syntax lint"
-  - rvm: 2.4.2
-    env: PUPPET_VERSION="~> 5.0" CHECK=metadata_lint
-  - rvm: 2.4.2
-    env: PUPPET_VERSION="~> 5.0" CHECK=build DEPLOY_TO_FORGE=yes
+    - rvm: 2.1.2
+      env: PUPPET_VERSION="~> 4.0" CHECK=spec
+    - rvm: 2.4.2
+      env: PUPPET_VERSION="~> 5.0" CHECK=spec
+    - rvm: 2.4.2
+      env: PUPPET_VERSION="~> 5.0" CHECK="syntax lint"
+    - rvm: 2.4.2
+      env: PUPPET_VERSION="~> 5.0" CHECK=metadata_lint
+    - rvm: 2.4.2
+      env: PUPPET_VERSION="~> 5.0" CHECK=build DEPLOY_TO_FORGE=yes
 branches:
   only:
-  - master
-  - "/^v\\d/"
+    - master
+    - "/^v\\d/"
 notifications:
   email: false
   pushover:

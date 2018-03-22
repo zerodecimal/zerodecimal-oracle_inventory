@@ -116,10 +116,10 @@ if central_inv and File.readable?(central_inv)
         if File.readable?(home_global_vars)
           g_root = Document.new(File.new(home_global_vars)).root
           domain = Facter.value(:domain)
-          n = g_root.detect { |node| node.kind_of?(Element) and node.attributes['NAME'] == 'oracle_install_crs_SCANName' }
+          n = g_root.find { |node| node.is_a?(Element) and node.attributes['NAME'] == 'oracle_install_crs_SCANName' }
           unless n.nil?
             v = n.attributes['VALUE']
-            o_inventory['oracle_scan_name'] = v.sub(/^([\w\d-]+).*$/, '\1.'+domain) unless v.nil?
+            o_inventory['oracle_scan_name'] = v.sub(%r{^([\w\d-]+).*$}, '\1.' + domain) unless v.nil?
           end
         end
         break

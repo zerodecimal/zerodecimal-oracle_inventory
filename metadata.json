@@ -1,14 +1,10 @@
 {
   "name": "zerodecimal-oracle_inventory",
-  "version": "0.4.8",
+  "version": "0.4.9",
   "author": "Eric Miller",
   "summary": "An Oracle inventory parser that creates inventory-based facts, and a class that manages the inventory pointer file.",
   "license": "Apache-2.0",
   "source": "https://github.com/zerodecimal/zerodecimal-oracle_inventory",
-  "tags": [
-    "oracle",
-    "database"
-  ],
   "dependencies": [
     {
       "name": "puppetlabs/stdlib",
@@ -97,5 +93,12 @@
       "name": "puppet",
       "version_requirement": ">= 4.3.0 < 6.0.0"
     }
-  ]
+  ],
+  "tags": [
+    "oracle",
+    "database"
+  ],
+  "pdk-version": "1.4.1",
+  "template-url": "file:///opt/puppetlabs/pdk/share/cache/pdk-templates.git",
+  "template-ref": "1.4.1-0-g52adbbb"
 }
