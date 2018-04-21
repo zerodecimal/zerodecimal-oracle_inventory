@@ -2,14 +2,13 @@
 
 begin
   ## Required GEMs
-  require 'facter'
   require 'xmlsimple'
   require 'time'
 
   ## Top scope variables
   etc_dir     = (Facter.value(:kernel) =~ %r{linux}i)   ? '/etc'
               : (Facter.value(:kernel) !~ %r{windows}i) ? '/var/opt/oracle'
-              :                                         nil
+              :                                           nil
   inv_pointer = etc_dir.nil? ? nil : etc_dir + '/oraInst.loc'
   oratab_file = etc_dir.nil? ? nil : etc_dir + '/oratab'
   central_inv = nil
