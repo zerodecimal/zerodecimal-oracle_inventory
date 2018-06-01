@@ -120,7 +120,7 @@ begin
                   domain = Facter.value(:domain)
                   g_vars['VAR'].each do |v|
                     if v['NAME'] == 'oracle_install_crs_SCANName'
-                      o_inventory['oracle_scan_name'] = v['VALUE'].sub(%r{^([\w\d-]+).*$}, '\1.' + domain)
+                      o_inventory['oracle_scan_name'] = v['VALUE'].sub(%r{^([\w\d-]+).*$}, '\1.' + domain) unless v.nil?
                       break
                     end
                   end
