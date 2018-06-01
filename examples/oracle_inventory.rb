@@ -118,7 +118,7 @@ if central_inv and File.readable?(central_inv)
           n = g_root.find { |node| node.is_a?(Element) and node.attributes['NAME'] == 'oracle_install_crs_SCANName' }
           unless n.nil?
             v = n.attributes['VALUE']
-            o_inventory['oracle_scan_name'] = v.sub(%r{^([\w\d-]+).*$}, '\1.' + domain) unless v.nil?
+            o_inventory['oracle_scan_name'] = v.sub(%r{^([\w\d-]+).*$}, '\1.' + domain) unless v.empty?
           end
         end
         break
