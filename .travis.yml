@@ -1,49 +1,45 @@
----
 sudo: false
 dist: trusty
 language: ruby
 cache: bundler
 before_install:
   - bundle -v
-  - rm -f Gemfile.lock
+  - rm Gemfile.lock || true
   - gem update --system
   - gem update bundler
   - gem --version
   - bundle -v
 script:
-  - 'bundle exec rake $CHECK'
-bundler_args: --without system_tests
-rvm:
-  - 2.4.1
-env:
-  - PUPPET_GEM_VERSION="~> 5.0" CHECK=spec
+  - bundle exec rake $CHECK
 matrix:
   fast_finish: true
   include:
-    -
-      env: CHECK=rubocop
-    -
-      env: CHECK="syntax lint"
-    -
-      env: CHECK=metadata_lint
-    -
-      env: CHECK=release_checks
-    -
-      env: CHECK=spec
-    -
-      env: PUPPET_GEM_VERSION="~> 4.0" CHECK=spec
-      rvm: 2.1.9
+    - rvm: 2.1.2
+      env: PUPPET_VERSION="~> 4.0" CHECK=spec
+    - rvm: 2.4.2
+      env: PUPPET_VERSION="~> 5.0" CHECK=spec
+    - rvm: 2.4.2
+      env: PUPPET_VERSION="~> 5.0" CHECK="syntax lint"
+    - rvm: 2.4.2
+      env: PUPPET_VERSION="~> 5.0" CHECK=metadata_lint
+    - rvm: 2.4.2
+      env: PUPPET_VERSION="~> 5.0" CHECK=build DEPLOY_TO_FORGE=yes
 branches:
   only:
     - master
-    - /^v\d/
+    - "/^v\\d/"
 notifications:
   email: false
+  pushover:
+    api_key:
+      secure: "08fVLSFcs8TyqbszsyEjgZXVwYiIWyt+NAFSVRGvFxQvBMTB+EMhNNnAoOfZv211AWkvDM5pHYVAL4NWO2khD0bkJ6ntJbgLcAusloqe+GzyKBfqxz40DI5vde2RGf1P9khHoA4Qa+QVyztVP6E+kMtqYrqkBkhRZdxTPrvP+0DSz9cvfirKajuMn5hDl3jDuoeJqyUXL5X0vKvZDNTShEMmCxW6l4KkueRGKxERfuVCZ0gTqqHP21ZW4EWPcfIxeAWvCL97J57mxD2TEb04aNv8YQbciJmG01S4eu78xMI5lSiSP/f7SNjo0GgIKcCPXY4Ma4jCMEWHu54DjXW4gg4G+aIiP2P1BF39jjbBJVkcYUFuf8RSSe6OH+/hhObZcP1Wuu8Mix6PVL3wH+EsnpHp1aEY2w0m6/Zq348NHrITS+BK4wdZR30+FxaE3qxCFu+5vpNS/qoByE7dCq3xGrI/5FSFNQ0Eavqh/Z3cHwNXUw8So2d+3NVzIuoy29N3hcpG9nQpUy+K6ac43R7UtMYOnlWfkZJQS+qerD8p3t31UxKls1/WPzOAeGlqMKz4mK/l2X5KgsIP/UYPilGwIqqWiiXUAtUDWQ3Ymv5vHo+od9Qhn3UTLQvssMFlUBJnZwAK/avIxeYdQnJ1GCuv9tdQdR3O0naE638AgY8D6IM="
+    users:
+      secure: "qYaSacidOrg1wKsvwfAdgePg7OWPCMo2PWmcighpOZ9M2M6q2yeB4UpEQi9lo/L45xkN2gVqME/G8Iofhr7EWUALajQzXFoGBfjNobV+8Aj9GYkjdpJF5Z88bHV6847P1XAkQ0n9SjaQLcJ77Ks/J3ZHh3tMQxAARVHjvIo17UCfNZs2fCPvE4vvnc2qzvc2iBPbGgTI6jXKZuSweIrzG3liqKh3b+S6gMTBS3dJhN3Pvnxd+uhrvfiU9+5zsZt2UyHi8XOihkjKQIpOWQyl798y6QqNdvryzvoLngxY4Ot1XAFEQTgsSCp9E/kexTs8p9pIGs7/7eO6xj2hlPXeNke9pO7+rPXFyCqa1LcgKf3yrdOHzj0rAuJ+D0nKiYtJRehtohCptZ0BwF2h1PScURBFagjwO0i8o4T47omEfrwrSn/85WBveumCqntY0IkqRPQpYAB70VLkWssv/Oh5QTlYVK+G6zC4qhx0SE7zMU12aL0E9Wl0JUsxoVqizGDlVvaaPaYBtLpMSsJ1bThNTUvrFsuxLK1YlpIdxhgXux1r2nxmr9S0W4UwQGGyBpjpIXs9QdEBmzpi9rG6RPqSYG1wqGoKUTQBplD7NznzyDkRt7tsWSBrRRJia1XL0c4mBuAs2cfgO6NKtYsXk5O0+rjVOr1FIxIcQqcbEsKL1Cg="
 deploy:
   provider: puppetforge
-  user: puppet
+  user: zerodecimal
   password:
-    secure: ""
+    secure: "MGrxTZmMbcmcMV59HRIMO4bbQBKn0Xf7UOZ/NO3r5HSfb5NKqrzjkk1mXz3axnHDECwzhu8QnZ/qAyK80nATD50irYQIW1gMSgkTzc/d/JnAihNuUpeFCY5jQw2ugzMqqwinYcm0ks6/Tm06epIGXFyqiUp/NNlQoa2a4HvywE7BsglsTQzHFNTtfh37sS68r7P/qCC6xeQBin6M30Gm/omJWN2UWw7Q70TCgS2DLsbid/pzoQTXJsX9W8vdA5eimfdhNrHDPqugLRkjlP6PaYpMeJXkhpL+bK6gNM+Kto1ZZ5N5qLTb8dXP7kHdZPfmrHMfkuiluY2opXGLGmvwLvY6O5os6BVnsI+rp0YuhTodCgHQgF3udgzAxBS86WQ38Q/OWt++N/SvnkdO7zErZKpD7+XikGq5k99CBg7wuGl0bEDbOPtdc0zeCEm04d3nUJ5fT5yEWbAlSr8Uuh5RD8vtqZ9tB85nL5b8XHX/tI9lSiQx63LkbYOi8+gw7BFBogdVWPNZ0e6G7xeVwOpITGMRe++yt4FEEsz21yd89NgTGCudvCddwn/8ZsIu1xNZ0vmCWm943mPNT01t3DvYmZMfYUj2B4EbToR7s6M5uf7wO5aTtRvKAQZ7VYFulfAu1xkB3dSNCGoufQnpV0vJuyNa5/1MHQjz8K329X6whpc="
   on:
     tags: true
     all_branches: true
