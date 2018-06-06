@@ -152,69 +152,69 @@ Datatype: Hash
 
 #### Parameters
 
-#### `manage_pointer`
+##### `manage_pointer`
 
-Description: Specifies whether or not to manage the inventory pointer file.
+Data type: `Boolean`
 
-Datatype: Boolean
+Whether or not to manage the inventory pointer file
 
-Default Value: true
+Default value: `true`
 
-#### `ensure`
+##### `ensure`
 
-Description: Specifies whether the inventory pointer file should exist.
+Data type: `Enum['present', 'absent']`
 
-Datatype: String [ 'present', 'absent' ]
+Should the pointer file exist
 
-Default Value: 'present'
+Default value: 'present'
 
-#### `file_owner`
+##### `file_owner`
 
-Description: Specifies the owner of the inventory pointer file.
+Data type: `String`
 
-Datatype: String
+Pointer file owner
 
-Default Value: 'root'
+Default value: 'root'
 
-#### `file_group`
+##### `file_group`
 
-Description: Specifies the group of the inventory pointer file.
+Data type: `String`
 
-Datatype: String
+Pointer file group
 
-Default Value: 'root'
+Default value: 'root'
 
-#### `file_mode`
+##### `file_mode`
 
-Description: Specifies the mode of the inventory pointer file.
+Data type: `Stdlib::Filemode`
 
-Datatype: String (valid octal file mode)
+Pointer file permissions
 
-Default Value: '0644'
+Default value: '0644'
 
-#### `pointer_file`
+##### `pointer_file`
 
-Description: Specifies the path to the inventory pointer file (will not override the fact).
+Data type: `Optional[Stdlib::UnixPath]`
 
-Datatype: String (valid file path)
+Full path to the pointer file
 
-Default Value: $facts[oracle_invetory_pointer]
+Default value: $::facts[oracle_inventory_pointer]
 
-#### `inventory_dir`
+##### `inventory_dir`
 
-Description: Specifies the path to the central inventory directory.
+Data type: `Stdlib::UnixPath`
 
-Datatype: String (valid file path)
+Directory for the inventory_loc entry in the pointer file
 
-Default Value: '/u01/app/oraInventory'
+Default value: '/u01/app/oraInventory'
 
-#### `inst_group`
+##### `inst_group`
 
-Description: Specifies the Oracle install owner group.
+Data type: `String`
 
-Datatype: String
+Value for the inst_group entry in the pointer file
 
-Default Value: 'oinstall'
+Default value: 'oinstall'
 
 ## Limitations
 

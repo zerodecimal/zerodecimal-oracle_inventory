@@ -15,9 +15,7 @@ class oracle_inventory::inventory_pointer (
   $inventory_dir = $::oracle_inventory::inventory_dir,
   $inst_group    = $::oracle_inventory::inst_group,
 ) inherits oracle_inventory {
-
   if defined('$pointer_file') and !empty($pointer_file) {
-
     $inventory_loc = defined('$::oracle_inventory') ? {
       true    => regsubst($::oracle_inventory, '/ContentsXML.+', ''),
       default => $inventory_dir
@@ -38,7 +36,5 @@ class oracle_inventory::inventory_pointer (
       mode    => $file_mode,
       content => $real_content,
     }
-
   }
-
 }
