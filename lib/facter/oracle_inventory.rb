@@ -163,7 +163,7 @@ begin
               when 'oracle.apps.ebs'
                 ebs_home = home_dir.sub(%r{\/fs.*}, '')
                 ## There can be only one
-                o_inventory['oracle_ebs_home'] = { home_dir => {} }
+                o_inventory['oracle_ebs_home'] = { ebs_home => {} }
                 comp['VER'].nil? || o_inventory['oracle_ebs_home'][ebs_home]['ver'] = comp['VER']
                 comp['INSTALL_TIME'].nil? || o_inventory['oracle_ebs_home'][ebs_home]['inst_time'] = comp['INSTALL_TIME']
                 break
