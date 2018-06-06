@@ -92,12 +92,9 @@ begin
                   end
                 end
                 ## There can be only one
-                o_inventory['oracle_crs_home'] = {
-                  home_dir => {
-                    'ver'       => comp['VER'],
-                    'inst_time' => comp['INSTALL_TIME'],
-                  },
-                }
+                o_inventory['oracle_crs_home'] = { home_dir => {} }
+                comp['VER'].nil? || o_inventory['oracle_crs_home'][home_dir]['ver'] = comp['VER']
+                comp['INSTALL_TIME'].nil? || o_inventory['oracle_crs_home'][home_dir]['inst_time'] = comp['INSTALL_TIME']
                 psu_ver.nil? || o_inventory['oracle_crs_home'][home_dir]['psu_ver'] = psu_ver
                 psu_inst_time.nil? || o_inventory['oracle_crs_home'][home_dir]['psu_inst_time'] = psu_inst_time
                 oratab.key?(home_dir) && o_inventory['oracle_crs_home'][home_dir]['sid'] = oratab[home_dir][0]
@@ -140,59 +137,49 @@ begin
                   end
                 end
                 o_inventory.key?('oracle_db_home') || o_inventory['oracle_db_home'] = {}
-                o_inventory['oracle_db_home'][home_dir] = {
-                  'ver'       => comp['VER'],
-                  'inst_time' => comp['INSTALL_TIME'],
-                }
-                psu_ver.nil? || o_inventory['oracle_db_home'][home_dir]['psu_ver'] = psu_ver
-                psu_inst_time.nil? || o_inventory['oracle_db_home'][home_dir]['psu_inst_time'] = psu_inst_time
-                oratab.key?(home_dir) && o_inventory['oracle_db_home'][home_dir]['sid'] = oratab[home_dir]
+                db_home_inventory = {}
+                comp['VER'].nil? || db_home_inventory['ver'] = comp['VER']
+                comp['INSTALL_TIME'].nil? || db_home_inventory['inst_time'] = comp['INSTALL_TIME']
+                psu_ver.nil? || db_home_inventory['psu_ver'] = psu_ver
+                psu_inst_time.nil? || db_home_inventory['psu_inst_time'] = psu_inst_time
+                oratab.key?(home_dir) && db_home_inventory['sid'] = oratab[home_dir]
+                db_home_inventory.empty? || o_inventory['oracle_db_home'][home_dir] = db_home_inventory
                 break
               ## OMS Home
               when 'oracle.sysman.top.oms'
                 ## There can be only one
-                o_inventory['oracle_oms_home'] = {
-                  home_dir => {
-                    'ver'       => comp['VER'],
-                    'inst_time' => comp['INSTALL_TIME'],
-                  },
-                }
+                o_inventory['oracle_oms_home'] = { home_dir => {} }
+                comp['VER'].nil? || o_inventory['oracle_oms_home'][home_dir]['ver'] = comp['VER']
+                comp['INSTALL_TIME'].nil? || o_inventory['oracle_oms_home'][home_dir]['inst_time'] = comp['INSTALL_TIME']
                 break
               ## EM Agent Home
               when 'oracle.sysman.top.agent'
                 ## There can be only one
-                o_inventory['oracle_em_agent_home'] = {
-                  home_dir => {
-                    'ver'       => comp['VER'],
-                    'inst_time' => comp['INSTALL_TIME'],
-                  },
-                }
+                o_inventory['oracle_em_agent_home'] = { home_dir => {} }
+                comp['VER'].nil? || o_inventory['oracle_em_agent_home'][home_dir]['ver'] = comp['VER']
+                comp['INSTALL_TIME'].nil? || o_inventory['oracle_em_agent_home'][home_dir]['inst_time'] = comp['INSTALL_TIME']
                 break
               ## EBS Home
               when 'oracle.apps.ebs'
+                ebs_home = home_dir.sub(%r{\/fs.*}, '')
                 ## There can be only one
-                o_inventory['oracle_ebs_home'] = {
-                  home_dir.sub(%r{\/fs.*}, '') => {
-                    'ver'       => comp['VER'],
-                    'inst_time' => comp['INSTALL_TIME'],
-                  },
-                }
+                o_inventory['oracle_ebs_home'] = { home_dir => {} }
+                comp['VER'].nil? || o_inventory['oracle_ebs_home'][ebs_home]['ver'] = comp['VER']
+                comp['INSTALL_TIME'].nil? || o_inventory['oracle_ebs_home'][ebs_home]['inst_time'] = comp['INSTALL_TIME']
                 break
               ## WebLogic Home
               when %r{^oracle\.(wls\.clients|coherence)$}
                 o_inventory.key?('oracle_wls_home') || o_inventory['oracle_wls_home'] = {}
-                o_inventory['oracle_wls_home'][home_dir] = {
-                  'ver'       => comp['VER'],
-                  'inst_time' => comp['INSTALL_TIME'],
-                }
+                o_inventory['oracle_wls_home'][home_dir] = {}
+                comp['VER'].nil? || o_inventory['oracle_wls_home'][home_dir]['ver'] = comp['VER']
+                comp['INSTALL_TIME'].nil? || o_inventory['oracle_wls_home'][home_dir]['inst_time'] = comp['INSTALL_TIME']
                 break
               ## Client Home
               when 'oracle.client'
                 o_inventory.key?('oracle_client_home') || o_inventory['oracle_client_home'] = {}
-                o_inventory['oracle_client_home'][home_dir] = {
-                  'ver'       => comp['VER'],
-                  'inst_time' => comp['INSTALL_TIME'],
-                }
+                o_inventory['oracle_client_home'][home_dir] = {}
+                comp['VER'].nil? || o_inventory['oracle_client_home'][home_dir]['ver'] = comp['VER']
+                comp['INSTALL_TIME'].nil? || o_inventory['oracle_client_home'][home_dir]['inst_time'] = comp['INSTALL_TIME']
                 break
               else
                 next
