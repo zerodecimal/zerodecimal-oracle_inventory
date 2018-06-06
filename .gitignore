@@ -1,5 +1,6 @@
 .*.sw[op]
 .metadata
+.vscode
 .yardoc
 .yardwarns
 *.iml
@@ -19,5 +20,5 @@
 /tmp/
 /vendor/
 /convert_report.txt
+/update_report.txt
 .DS_Store
-.vscode

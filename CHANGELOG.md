@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## Release 0.5.0
+
+- Added protection from missing XML tags
+- Updated to PDK v1.5.0
+- Updated module documentation
+
 ## Release 0.4.9
 
 - Updated the PDK template to version 1.4.1
