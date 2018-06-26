@@ -132,6 +132,12 @@ Description: EBS application (Fusion Middleware) home information
 
 Datatype: Hash
 
+#### `oracle_endeca_home`
+
+Description: Endeca home information
+
+Datatype: Hash
+
 #### `oracle_wls_home`
 
 Description: WebLogic home information
