@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## Release 0.5.1
+
+- Added check for Endeca home (oracle_endeca_home fact)
+
 ## Release 0.5.0
 
 - Added protection from missing XML tags
