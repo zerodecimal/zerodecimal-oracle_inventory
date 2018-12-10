@@ -24,7 +24,11 @@ if !inv_pointer.nil? and File.readable?(inv_pointer)
   IO.foreach(inv_pointer) { |line| line[%r{^inventory_loc=(.+)$}] && central_inv = Regexp.last_match(1) + '/ContentsXML/inventory.xml' }
 ## On Windows we already know where it is
 elsif Facter.value(:osfamily) =~ %r{windows}i
-  central_inv = 'C:/Program Files/Oracle/Inventory/ContentsXML/inventory.xml'
+  if File.readable?('C:/Program Files (x86)/Oracle/Inventory/ContentsXML/inventory.xml')
+    central_inv = 'C:/Program Files (x86)/Oracle/Inventory/ContentsXML/inventory.xml'
+  else
+    central_inv = 'C:/Program Files/Oracle/Inventory/ContentsXML/inventory.xml'
+  end
 end
 
 ## Cache the DB home and SID information from /etc/oratab (including ASM)

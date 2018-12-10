@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## Release 0.5.2
+
+- Added support for 32 bit program files on 64 bit Windows
+
 ## Release 0.5.1
 
 - Added check for Endeca home (oracle_endeca_home fact)
