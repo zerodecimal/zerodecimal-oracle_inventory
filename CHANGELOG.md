@@ -2,9 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## Release 0.5.3
+
+- Update to PDK v1.15.0
+
 ## Release 0.5.2
 
-- Update to PDK v1.8.0
 - Added support for 32 bit program files on 64 bit Windows
 
 ## Release 0.5.1

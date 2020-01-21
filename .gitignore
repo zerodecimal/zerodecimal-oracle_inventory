@@ -1,7 +1,6 @@
 .git/
 .*.sw[op]
 .metadata
-.vscode
 .yardoc
 .yardwarns
 *.iml
@@ -23,3 +22,6 @@
 /convert_report.txt
 /update_report.txt
 .DS_Store
+.project
+.envrc
+/inventory.yaml
