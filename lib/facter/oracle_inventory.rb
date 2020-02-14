@@ -162,6 +162,8 @@ begin
                 o_inventory['oracle_em_agent_home'] = { home_dir => {} }
                 comp['VER'].nil? || o_inventory['oracle_em_agent_home'][home_dir]['ver'] = comp['VER']
                 comp['INSTALL_TIME'].nil? || o_inventory['oracle_em_agent_home'][home_dir]['inst_time'] = comp['INSTALL_TIME']
+                ## This is hard-coded but seems quite difficult to get to otherwise
+                o_inventory['oracle_em_agent_home'][home_dir]['instance_home'] = home_dir.sub(%r{/core/\d.*}, '/agent_inst')
                 break
               ## EBS Home
               when 'oracle.apps.ebs'
