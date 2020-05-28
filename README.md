@@ -44,7 +44,7 @@ Install the oracle_inventory module to add the facts and classes to your environ
 
 ### Setup Requirements
 
-puppetlabs/stdlib >= 4.13.1 is required.
+puppetlabs/stdlib >= 4.13.1 < 7.0.0 is required.
 
 ### Beginning with oracle_inventory
 

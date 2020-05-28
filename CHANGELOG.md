@@ -2,9 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## Release 0.5.4
+
+- Updated module dependency
+
 ## Release 0.5.3
 
-- Update to PDK v1.15.0
+- Updated to PDK v1.15.0
 
 ## Release 0.5.2
 
