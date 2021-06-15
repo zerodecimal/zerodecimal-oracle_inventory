@@ -177,7 +177,7 @@ if central_inv and File.readable?(central_inv)
         comp['INSTALL_TIME'].nil? || o_inventory['oracle_endeca_home'][home_dir]['inst_time'] = comp['INSTALL_TIME']
         break
       ## WebLogic Home
-      when %r{^oracle\.(wls\.clients|coherence)}
+      when 'oracle.as.common.top', %r{^oracle\.(wls\.clients|coherence)}
         o_inventory.key?('oracle_wls_home') || o_inventory['oracle_wls_home'] = {}
         o_inventory['oracle_wls_home'][home_dir] = {}
         comp['VER'].nil? || o_inventory['oracle_wls_home'][home_dir]['ver'] = comp['VER']
