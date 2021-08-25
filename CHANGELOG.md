@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## Release 0.6.0
+
+**BREAKING CHANGE:**
+
+- This module now requires stdlib >= 8.0.0 due to changes in ensure_packages function parameters
+
+## Release 0.5.6
+
+- Additional pattern match for WebLogic home
+
 ## Release 0.5.5
 
 - Updated to PDK v1.18.1
