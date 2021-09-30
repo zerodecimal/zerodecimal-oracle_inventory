@@ -65,6 +65,20 @@ begin
     { 'ver' => patches.keys[0], 'inst_time' => patches.values[0] }
   end
 
+  ## Return the OPatch version for an Oracle Home
+  ## Parameters:
+  ##   homedir (string): the Oracle Home
+  def get_opatch_ver(homedir)
+    verfile = homedir + '/OPatch/version.txt'
+    version = nil
+    if File.readable?(verfile)
+      File.open(verfile).each do |line|
+        version = line.split(':')[-1].chomp if line[%r{^OPATCH_VERSION:[\d\.]+}]
+      end
+    end
+    version
+  end
+
   ## Parse the Central Inventory and begin setting the Fact variables
   if central_inv and File.readable?(central_inv)
     o_inventory['oracle_inventory'] = central_inv
@@ -84,6 +98,8 @@ begin
               case comp['NAME']
               ## CRS Home *note* This can also be found in /etc/oracle/olr.loc
               when 'oracle.crs'
+                ## Get the OPatch version
+                opatch_ver = get_opatch_ver(home_dir)
                 ## Get the PSU information
                 psu_ver = nil
                 psu_inst_time = nil
@@ -99,6 +115,7 @@ begin
                 o_inventory['oracle_crs_home'] = { home_dir => {} }
                 comp['VER'].nil? || o_inventory['oracle_crs_home'][home_dir]['ver'] = comp['VER']
                 comp['INSTALL_TIME'].nil? || o_inventory['oracle_crs_home'][home_dir]['inst_time'] = comp['INSTALL_TIME']
+                opatch_ver.nil? || o_inventory['oracle_crs_home'][home_dir]['opatch_ver'] = opatch_ver
                 psu_ver.nil? || o_inventory['oracle_crs_home'][home_dir]['psu_ver'] = psu_ver
                 psu_inst_time.nil? || o_inventory['oracle_crs_home'][home_dir]['psu_inst_time'] = psu_inst_time
                 oratab.key?(home_dir) && o_inventory['oracle_crs_home'][home_dir]['sid'] = oratab[home_dir][0]
@@ -129,6 +146,8 @@ begin
                 break
               ## Database Home
               when 'oracle.server'
+                ## Get the OPatch version
+                opatch_ver = get_opatch_ver(home_dir)
                 ## Get the PSU information
                 psu_ver = nil
                 psu_inst_time = nil
@@ -144,6 +163,7 @@ begin
                 db_home_inventory = {}
                 comp['VER'].nil? || db_home_inventory['ver'] = comp['VER']
                 comp['INSTALL_TIME'].nil? || db_home_inventory['inst_time'] = comp['INSTALL_TIME']
+                opatch_ver.nil? || db_home_inventory['opatch_ver'] = opatch_ver
                 psu_ver.nil? || db_home_inventory['psu_ver'] = psu_ver
                 psu_inst_time.nil? || db_home_inventory['psu_inst_time'] = psu_inst_time
                 oratab.key?(home_dir) && db_home_inventory['sid'] = oratab[home_dir]

@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## Release 0.6.1
+
+- Added OPatch version to oracle_crs_home and oracle_db_home
+
 ## Release 0.6.0
 
 **BREAKING CHANGE:**
