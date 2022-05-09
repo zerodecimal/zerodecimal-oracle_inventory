@@ -130,7 +130,7 @@ begin
                         when 'OwnerId'
                           o_inventory['oracle_crs_home'][home_dir]['owner'] = var['VAL']
                         when 's_nodelist'
-                          o_inventory['oracle_rac_nodes'] = var['VAL'].split(',').sort
+                          var['VAL'].empty? || o_inventory['oracle_rac_nodes'] = var['VAL'].split(',').sort
                         else
                           next
                         end

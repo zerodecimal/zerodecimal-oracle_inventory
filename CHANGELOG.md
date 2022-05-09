@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## Release 0.6.3
+
+- Bugfix: Prevent oracle_rac_nodes from being defined if empty
+
 ## Release 0.6.2
 
 - Added owner to oracle_crs_home
