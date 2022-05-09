@@ -88,7 +88,6 @@ begin
         list['HOME'].each do |home|
           next unless home['REMOVED'].nil? && File.directory?(home['LOC'])
           home_dir       = home['LOC']
-          home_inv_props = home_dir + '/inventory/ContentsXML/oraclehomeproperties.xml'
           home_inv_comps = home_dir + '/inventory/ContentsXML/comps.xml'
           next unless File.readable?(home_inv_comps)
           h_inventory = XmlSimple.xml_in(home_inv_comps)
@@ -119,17 +118,26 @@ begin
                 psu_ver.nil? || o_inventory['oracle_crs_home'][home_dir]['psu_ver'] = psu_ver
                 psu_inst_time.nil? || o_inventory['oracle_crs_home'][home_dir]['psu_inst_time'] = psu_inst_time
                 oratab.key?(home_dir) && o_inventory['oracle_crs_home'][home_dir]['sid'] = oratab[home_dir][0]
-                ## Get the list of cluster nodes
-                if File.readable?(home_inv_props)
-                  g_inventory = XmlSimple.xml_in(home_inv_props)
-                  cluster_info = g_inventory['CLUSTER_INFO'] || []
-                  unless cluster_info.empty?
-                    all_nodes = []
-                    node_list = cluster_info[0]['NODE_LIST'] || []
-                    node_list.empty? || node_list[0]['NODE'].each { |node| all_nodes << (node['NAME']) }
-                    all_nodes.empty? || o_inventory['oracle_rac_nodes'] = all_nodes.sort
+                ## Get the list of cluster nodes and Grid Infrastructure owner
+                unless comp['VER'].nil?
+                  home_inv_props = home_dir + '/inventory/Components21/oracle.has.crs/' + comp['VER'] + '/context.xml'
+                  if File.readable?(home_inv_props)
+                    g_inventory = XmlSimple.xml_in(home_inv_props)
+                    cluster_info = g_inventory['VAR_LIST']
+                    unless cluster_info.empty?
+                      cluster_info[0]['VAR'].each do |var|
+                        case var['NAME']
+                        when 'OwnerId'
+                          o_inventory['oracle_crs_home'][home_dir]['owner'] = var['VAL']
+                        when 's_nodelist'
+                          o_inventory['oracle_rac_nodes'] = var['VAL'].split(',').sort
+                        else
+                          next
+                        end
+                      end
+                    end
+                    g_inventory.clear
                   end
-                  g_inventory.clear
                 end
                 ## Get the SCAN name
                 home_global_vars = home_dir + '/inventory/globalvariables/oracle.crs/globalvariables.xml'

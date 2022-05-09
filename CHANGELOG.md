@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## Release 0.6.2
+
+- Added owner to oracle_crs_home
+- Changed the source file for oracle_rac_nodes
+
 ## Release 0.6.1
 
 - Added OPatch version to oracle_crs_home and oracle_db_home

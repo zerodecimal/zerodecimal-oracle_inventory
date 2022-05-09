@@ -87,7 +87,6 @@ if central_inv and File.readable?(central_inv)
   c_root.each_element('//HOME') do |home|
     next unless home['REMOVED'].nil? && File.directory?(home['LOC'])
     home_dir       = home['LOC']
-    home_inv_props = home_dir + '/inventory/ContentsXML/oraclehomeproperties.xml'
     home_inv_comps = home_dir + '/inventory/ContentsXML/comps.xml'
     next unless File.readable?(home_inv_comps)
     l_root = Document.new(File.new(home_inv_comps)).root
@@ -117,14 +116,20 @@ if central_inv and File.readable?(central_inv)
         psu_inst_time.nil? || o_inventory['oracle_crs_home'][home_dir]['psu_inst_time'] = psu_inst_time
         oratab.key?(home_dir) && o_inventory['oracle_crs_home'][home_dir]['sid'] = oratab[home_dir][0]
         ## Get the list of cluster nodes
-        if File.readable?(home_inv_props)
-          all_nodes = []
-          p_root = Document.new(File.new(home_inv_props)).root
-          unless p_root.elements['CLUSTER_INFO'].nil?
-            node_list = p_root.elements['CLUSTER_INFO'].elements['NODE_LIST']
-            unless node_list.nil?
-              node_list.each_element('//NODE') { |node| all_nodes << (node['NAME']) }
-              o_inventory['oracle_rac_nodes'] = all_nodes.sort
+        unless comp['VER'].nil?
+          home_inv_props = home_dir + '/inventory/Components21/oracle.has.crs/' + comp['VER'] + '/context.xml'
+          if File.readable?(home_inv_props)
+            p_root = Document.new(File.new(home_inv_props)).root
+            var_list = p_root.elements['VAR_LIST']
+            var_list&.each_element('//VAR') do |var|
+              case var['NAME']
+              when 'OwnerId'
+                o_inventory['oracle_crs_home'][home_dir]['owner'] = var['VAL']
+              when 's_clusterNodes'
+                o_inventory['oracle_rac_nodes'] = var['VAL'].split(',').sort
+              else
+                next
+              end
             end
           end
         end
