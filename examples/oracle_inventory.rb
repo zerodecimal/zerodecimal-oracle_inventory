@@ -126,7 +126,7 @@ if central_inv and File.readable?(central_inv)
               when 'OwnerId'
                 o_inventory['oracle_crs_home'][home_dir]['owner'] = var['VAL']
               when 's_clusterNodes'
-                o_inventory['oracle_rac_nodes'] = var['VAL'].split(',').sort
+                var['VAL'].empty? || o_inventory['oracle_rac_nodes'] = var['VAL'].split(',').sort
               else
                 next
               end
