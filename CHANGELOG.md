@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## Release 0.6.4
+
+- Updated documentation
+
+>**BREAKING CHANGE:**
+
+- Updated OS compatibility list
+
 ## Release 0.6.3
 
 - Bugfix: Prevent oracle_rac_nodes from being defined if empty
@@ -17,7 +25,7 @@ All notable changes to this project will be documented in this file.
 
 ## Release 0.6.0
 
-**BREAKING CHANGE:**
+>**BREAKING CHANGE:**
 
 - This module now requires stdlib >= 8.0.0 due to changes in ensure_packages function parameters
 
