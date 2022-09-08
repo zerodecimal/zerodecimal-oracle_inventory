@@ -230,18 +230,16 @@ Default value: 'oinstall'
 * CentOS
 * Oracle Linux
 * Scientific Linux
-* Ubuntu
-* Solaris
 * Windows
 
 ### Supported Oracle versions
 
 The included facts are known to work on the following Oracle software versions. They have not been tested against any others.
 
-* CRS: 11g, 12c
-* Database: 11g, 12c
-* Database Client: 11g, 12c
-* Enterprise Manager (and agent): 12c, 13c
+* CRS: 11g, 12cR1, 12cR2, 18c, 19c
+* Database: 11g, 12cR1, 12cR2, 18c, 19c
+* Database Client: 11g, 12c, 19c
+* Enterprise Manager (OMS and Agent): 12c, 13c
 * E-Business Suite: 12.2 (when there is a single pointer file and central inventory)
 * WebLogic: 11g, 12c
 

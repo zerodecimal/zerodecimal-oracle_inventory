@@ -4,6 +4,27 @@
 #
 # @summary Manages the Oracle central inventory location pointer.
 #
+# @param ensure
+#   Should the pointer file exist
+#
+# @param file_owner
+#   Pointer file owner
+#
+# @param file_group
+#   Pointer file group
+#
+# @param file_mode
+#   Pointer file permissions
+#
+# @param pointer_file
+#   Full path to the pointer file
+#
+# @param inventory_dir
+#   Directory for the inventory_loc entry in the pointer file
+#
+# @param inst_group
+#   Value for the inst_group entry in the pointer file
+#
 # @example
 #   include oracle_inventory::inventory_pointer
 class oracle_inventory::inventory_pointer (

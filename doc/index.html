@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  File: README
+  
+    &mdash; Documentation by YARD 0.9.28
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" />
+
+<script type="text/javascript">
+  pathId = "";
+  relpath = '';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="puppet_class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="_index.html">Index</a> &raquo; 
+    <span class="title">File: README</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="puppet_class_list_link"
+        href="puppet_class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><div id='filecontents'>
+<h1 id="label-oracle_inventory">oracle_inventory</h1>
+
+<p><a href="https://github.com/zerodecimal/zerodecimal-oracle_inventory/blob/master/LICENSE"><img src="https://img.shields.io/github/license/zerodecimal/zerodecimal-oracle_inventory.svg"></a> <a href="https://travis-ci.com/zerodecimal/zerodecimal-oracle_inventory"><img src="https://travis-ci.com/zerodecimal/zerodecimal-oracle_inventory.svg?branch=master"></a> &lt;!— [![Puppet Forge Version](<a href="https://img.shields.io/puppetforge/v/zerodecimal/oracle_inventory.svg)](https://forge.puppet.com/zerodecimal/oracle_inventory">img.shields.io/puppetforge/v/zerodecimal/oracle_inventory.svg)](https://forge.puppet.com/zerodecimal/oracle_inventory</a>) [![Puppet Forge Downloads](<a href="https://img.shields.io/puppetforge/dt/zerodecimal/oracle_inventory.svg)](https://forge.puppet.com/zerodecimal/oracle_inventory">img.shields.io/puppetforge/dt/zerodecimal/oracle_inventory.svg)](https://forge.puppet.com/zerodecimal/oracle_inventory</a>) [![Puppet Forge Score](<a href="https://img.shields.io/puppetforge/f/zerodecimal/oracle_inventory.svg)](https://forge.puppet.com/zerodecimal/oracle_inventory">img.shields.io/puppetforge/f/zerodecimal/oracle_inventory.svg)](https://forge.puppet.com/zerodecimal/oracle_inventory</a>) —&gt;</p>
+
+<h2 id="label-Table+of+Contents">Table of Contents</h2>
+<ol><li>
+<p><a href="#description">Description</a></p>
+</li><li>
+<p><a href="#setup">Setup - The basics of getting started with oracle_inventory</a></p>
+<ul><li>
+<p><a href="#what-oracle_inventory-affects">What oracle_inventory affects</a></p>
+</li><li>
+<p><a href="#setup-requirements">Setup requirements</a></p>
+</li><li>
+<p><a href="#beginning-with-oracle_inventory">Beginning with oracle_inventory</a></p>
+</li></ul>
+</li><li>
+<p><a href="#usage">Usage - Configuration options and additional functionality</a></p>
+</li><li>
+<p><a href="#reference">Reference - An under-the-hood peek at what the module is doing and how</a></p>
+</li><li>
+<p><a href="#limitations">Limitations - OS compatibility, etc.</a></p>
+</li><li>
+<p><a href="#development">Development - Guide for contributing to the module</a></p>
+</li></ol>
+
+<h2 id="label-Description">Description</h2>
+
+<p>This module provides an Oracle inventory parser that produces a set of facts showing what Oracle products are installed on your system. For non-Windows servers, it also includes a class to manage the contents of the inventory pointer file.</p>
+
+<p>The inventory parser begins with the central inventory XML file, then inspects all installed (not removed) homes referenced therein. If there is a product installed in a home that matches a known component ID (see <a href="#reference">Reference</a> section below), a fact is created with that home location, version, and install date/time. In the case of CRS and Database homes, PSU (patch set update) versions and install date/times are included.</p>
+
+<p>These facts can be useful in configuring servers with Oracle products installed. For example, when the Puppet agent runs after a database home is installed, a fact called “oracle_db_home” is created and can then be used to set the oracle user&#39;s environment.</p>
+
+<p>The facts can also be useful for inventory reports. For example, to see the latest patch set update (PSU) applied to all the databases in an environment.</p>
+
+<p><em>Puppet version 4.3 is required because this module makes use of features such as strong data typing.</em></p>
+
+<h2 id="label-Setup">Setup</h2>
+
+<p>Install the oracle_inventory module to add the facts and classes to your environment.</p>
+
+<h3 id="label-What+oracle_inventory+affects">What oracle_inventory affects</h3>
+
+<p>Agent nodes will need to be able to install the xml-simple Ruby gem using the puppet_gem provider. The ensure_packages function is used for this, to give users the freedom to manage this package resource in another module.</p>
+
+<p>If you wish to avoid the xml-simple requirement, there is a REXML version of the fact script under examples. Feel free to pull it out and put it under some other module. It produces the same output but takes a little bit longer to run.</p>
+
+<h3 id="label-Setup+Requirements">Setup Requirements</h3>
+
+<p>puppetlabs/stdlib &gt;= 4.13.1 &lt; 7.0.0 is required.</p>
+
+<h3 id="label-Beginning+with+oracle_inventory">Beginning with oracle_inventory</h3>
+
+<p>The module can simply be installed with a Puppetfile entry and the facts will be available (as long as the xml-simple gem is installed). To manage the inventory pointer file, include the oracle_inventory class in some profile manifest. To accept the default parameters:</p>
+
+<pre class="code ruby"><code class="ruby">include ::oracle_inventory
+</code></pre>
+
+<h2 id="label-Usage">Usage</h2>
+
+<p>To manage the Oracle inventory pointer file with non-default parameters, declare the class in this format:</p>
+
+<pre class="code ruby"><code class="ruby">class { &#39;::oracle_inventory&#39;:
+  file_owner    =&gt; &#39;oracle&#39;,
+  file_group    =&gt; &#39;oinstall&#39;,
+  inventory_dir =&gt; &#39;/home/oracle/oraInventory&#39;,
+}
+</code></pre>
+
+<p>To install the xml-simple gem and use the facts, but not manage the Oracle inventory pointer file, declare the class as such:</p>
+
+<pre class="code ruby"><code class="ruby">class { &#39;::oracle_inventory&#39;:
+  manage_pointer =&gt; false,
+}
+</code></pre>
+
+<h2 id="label-Reference">Reference</h2>
+
+<h3 id="label-Facts">Facts</h3>
+
+<h4 id="label-oracle_inventory_pointer"><code>oracle_inventory_pointer</code></h4>
+
+<p>Description: Central inventory pointer file location</p>
+
+<p>Datatype: String</p>
+
+<h4 id="label-oracle_inventory"><code>oracle_inventory</code></h4>
+
+<p>Description: Central inventory file location</p>
+
+<p>Datatype: String</p>
+
+<h4 id="label-oracle_crs_home"><code>oracle_crs_home</code></h4>
+
+<p>Description: CRS home information, including ASM ORACLE_SID from oratab</p>
+
+<p>Datatype: Hash</p>
+
+<h4 id="label-oracle_rac_nodes"><code>oracle_rac_nodes</code></h4>
+
+<p>Description: List of RAC cluster nodes</p>
+
+<p>Datatype: Array</p>
+
+<h4 id="label-oracle_scan_name"><code>oracle_scan_name</code></h4>
+
+<p>Description: Single Client Access Name for RAC clusters</p>
+
+<p>Datatype: String</p>
+
+<h4 id="label-oracle_db_home"><code>oracle_db_home</code></h4>
+
+<p>Description: Database home information, including ORACLE_SID(s) from oratab</p>
+
+<p>Datatype: Hash</p>
+
+<h4 id="label-oracle_oms_home"><code>oracle_oms_home</code></h4>
+
+<p>Description: OMS (Enterprise Manager) home information</p>
+
+<p>Datatype: Hash</p>
+
+<h4 id="label-oracle_em_agent_home"><code>oracle_em_agent_home</code></h4>
+
+<p>Description: Enterprise Manager Agent home information</p>
+
+<p>Datatype: Hash</p>
+
+<h4 id="label-oracle_ebs_home"><code>oracle_ebs_home</code></h4>
+
+<p>Description: EBS application (Fusion Middleware) home information</p>
+
+<p>Datatype: Hash</p>
+
+<h4 id="label-oracle_endeca_home"><code>oracle_endeca_home</code></h4>
+
+<p>Description: Endeca home information</p>
+
+<p>Datatype: Hash</p>
+
+<h4 id="label-oracle_wls_home"><code>oracle_wls_home</code></h4>
+
+<p>Description: WebLogic home information</p>
+
+<p>Datatype: Hash</p>
+
+<h4 id="label-oracle_client_home"><code>oracle_client_home</code></h4>
+
+<p>Description: Database Client home information</p>
+
+<p>Datatype: Hash</p>
+
+<h3 id="label-Classes">Classes</h3>
+
+<h4 id="label-oracle_inventory"><code>oracle_inventory</code></h4>
+<ul><li>
+<p>The main class. Any other classes are declared internally.</p>
+</li></ul>
+
+<h4 id="label-Parameters">Parameters</h4>
+
+<h5 id="label-manage_pointer"><code>manage_pointer</code></h5>
+
+<p>Data type: <code>Boolean</code></p>
+
+<p>Whether or not to manage the inventory pointer file</p>
+
+<p>Default value: <code>true</code></p>
+
+<h5 id="label-ensure"><code>ensure</code></h5>
+
+<p>Data type: <code>Enum[&#39;present&#39;, &#39;absent&#39;]</code></p>
+
+<p>Should the pointer file exist</p>
+
+<p>Default value: &#39;present&#39;</p>
+
+<h5 id="label-file_owner"><code>file_owner</code></h5>
+
+<p>Data type: <code>String</code></p>
+
+<p>Pointer file owner</p>
+
+<p>Default value: &#39;root&#39;</p>
+
+<h5 id="label-file_group"><code>file_group</code></h5>
+
+<p>Data type: <code>String</code></p>
+
+<p>Pointer file group</p>
+
+<p>Default value: &#39;root&#39;</p>
+
+<h5 id="label-file_mode"><code>file_mode</code></h5>
+
+<p>Data type: <code>Stdlib::Filemode</code></p>
+
+<p>Pointer file permissions</p>
+
+<p>Default value: &#39;0644&#39;</p>
+
+<h5 id="label-pointer_file"><code>pointer_file</code></h5>
+
+<p>Data type: <code>Optional[Stdlib::UnixPath]</code></p>
+
+<p>Full path to the pointer file</p>
+
+<p>Default value: $::<a href="oracle_inventory_pointer">facts</a></p>
+
+<h5 id="label-inventory_dir"><code>inventory_dir</code></h5>
+
+<p>Data type: <code>Stdlib::UnixPath</code></p>
+
+<p>Directory for the inventory_loc entry in the pointer file</p>
+
+<p>Default value: &#39;/u01/app/oraInventory&#39;</p>
+
+<h5 id="label-inst_group"><code>inst_group</code></h5>
+
+<p>Data type: <code>String</code></p>
+
+<p>Value for the inst_group entry in the pointer file</p>
+
+<p>Default value: &#39;oinstall&#39;</p>
+
+<h2 id="label-Limitations">Limitations</h2>
+
+<h3 id="label-Supported+Operating+Systems">Supported Operating Systems</h3>
+<ul><li>
+<p>RedHat</p>
+</li><li>
+<p>CentOS</p>
+</li><li>
+<p>Oracle Linux</p>
+</li><li>
+<p>Scientific Linux</p>
+</li><li>
+<p>Windows</p>
+</li></ul>
+
+<h3 id="label-Supported+Oracle+versions">Supported Oracle versions</h3>
+
+<p>The included facts are known to work on the following Oracle software versions. They have not been tested against any others.</p>
+<ul><li>
+<p>CRS: 11g, 12cR1, 12cR2, 18c, 19c</p>
+</li><li>
+<p>Database: 11g, 12cR1, 12cR2, 18c, 19c</p>
+</li><li>
+<p>Database Client: 11g, 12c, 19c</p>
+</li><li>
+<p>Enterprise Manager (OMS and Agent): 12c, 13c</p>
+</li><li>
+<p>E-Business Suite: 12.2 (when there is a single pointer file and central inventory)</p>
+</li><li>
+<p>WebLogic: 11g, 12c</p>
+</li></ul>
+
+<h2 id="label-Development">Development</h2>
+
+<p>Contributions are always welcome - please submit a pull request or issue on <a href="https://github.com/zerodecimal/zerodecimal-oracle_inventory">GitHub</a>.</p>
+
+<h2 id="label-Contributors">Contributors</h2>
+
+<p>The list of contributors can be found at: <a href="https://github.com/zerodecimal/zerodecimal-oracle_inventory/graphs/contributors">github.com/zerodecimal/zerodecimal-oracle_inventory/graphs/contributors</a>.</p>
+</div></div>
+
+      <div id="footer">
+     Generated by <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>.
+</div>
+
+    </div>
+  </body>
+</html>
