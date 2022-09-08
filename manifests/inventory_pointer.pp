@@ -26,15 +26,15 @@
 #   Value for the inst_group entry in the pointer file
 #
 # @example
-#   include oracle_inventory::inventory_pointer
+#   include ::oracle_inventory::inventory_pointer
 class oracle_inventory::inventory_pointer (
-  $ensure        = $::oracle_inventory::ensure,
-  $file_owner    = $::oracle_inventory::file_owner,
-  $file_group    = $::oracle_inventory::file_group,
-  $file_mode     = $::oracle_inventory::file_mode,
-  $pointer_file  = $::oracle_inventory::pointer_file,
-  $inventory_dir = $::oracle_inventory::inventory_dir,
-  $inst_group    = $::oracle_inventory::inst_group,
+  Enum['present', 'absent']  $ensure        = $::oracle_inventory::ensure,
+  String                     $file_owner    = $::oracle_inventory::file_owner,
+  String                     $file_group    = $::oracle_inventory::file_group,
+  Stdlib::Filemode           $file_mode     = $::oracle_inventory::file_mode,
+  Optional[Stdlib::UnixPath] $pointer_file  = $::oracle_inventory::pointer_file,
+  Stdlib::UnixPath           $inventory_dir = $::oracle_inventory::inventory_dir,
+  String                     $inst_group    = $::oracle_inventory::inst_group,
 ) inherits oracle_inventory {
   if defined('$pointer_file') and !empty($pointer_file) {
     $inventory_loc = defined('$::oracle_inventory') ? {

@@ -1,1 +1,5 @@
 --relative
+--no-relative_classname_inclusion-check
+--no-strict_indent-check
+--no-top_scope_facts-check
+--no-topscope_variable-check

@@ -29,7 +29,7 @@
 #   Value for the inst_group entry in the pointer file
 #
 # @example
-#   include oracle_inventory
+#   include ::oracle_inventory
 class oracle_inventory (
   Boolean                    $manage_pointer = true,
   Enum['present', 'absent']  $ensure         = 'present',
@@ -39,7 +39,7 @@ class oracle_inventory (
   Optional[Stdlib::UnixPath] $pointer_file   = $::facts[oracle_inventory_pointer],
   Stdlib::UnixPath           $inventory_dir  = '/u01/app/oraInventory',
   String                     $inst_group     = 'oinstall',
-){
+) {
   ## Take care of Ruby GEM dependency for fact script
   ensure_packages(['xml-simple'], {
     ensure   => installed,
@@ -47,7 +47,7 @@ class oracle_inventory (
   })
 
   ## Manage the inventory pointer file if not on Windows
-  if $manage_pointer and $::kernel != 'windows' {
+  if $manage_pointer and $facts['kernel'] != 'windows' {
     include ::oracle_inventory::inventory_pointer
   }
 }
