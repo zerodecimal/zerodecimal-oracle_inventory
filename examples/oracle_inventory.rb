@@ -8,20 +8,20 @@ require 'time'
 include REXML
 
 ## Top scope variables
-etc_dir     = (Facter.value(:kernel) =~ %r{linux}i)   ? '/etc'
-            : (Facter.value(:kernel) !~ %r{windows}i) ? '/var/opt/oracle'
-            :                                           nil
+etc_dir = (Facter.value(:kernel) =~ %r{linux}i)   ? '/etc'
+        : (Facter.value(:kernel) !~ %r{windows}i) ? '/var/opt/oracle'
+        :                                           nil
 inv_pointer = etc_dir.nil? ? nil : etc_dir + '/oraInst.loc'
 oratab_file = etc_dir.nil? ? nil : etc_dir + '/oratab'
 central_inv = nil
-oratab      = {}
+oratab = {}
 ## This is the hash that will contain the facts
 o_inventory = {}
 
 ## Find the Central Inventory location if we are not on a Windows platform
 if !inv_pointer.nil? and File.readable?(inv_pointer)
   o_inventory['oracle_inventory_pointer'] = inv_pointer
-  IO.foreach(inv_pointer) { |line| line[%r{^inventory_loc=(.+)$}] && central_inv = Regexp.last_match(1) + '/ContentsXML/inventory.xml' }
+  File.foreach(inv_pointer) { |line| line[%r{^inventory_loc=(.+)$}] && central_inv = Regexp.last_match(1) + '/ContentsXML/inventory.xml' }
 ## On Windows we already know where it is
 elsif Facter.value(:osfamily) =~ %r{windows}i
   if File.readable?('C:/Program Files (x86)/Oracle/Inventory/ContentsXML/inventory.xml')
@@ -37,7 +37,7 @@ if !oratab_file.nil? and File.readable?('/etc/oratab')
     next unless line[%r{^[\+a-z]}i]
     entry = line.split(':')
     oratab.key?(entry[1]) || oratab[entry[1]] = []
-    oratab[entry[1]] << entry[0] && oratab[entry[1]].sort!
+    (oratab[entry[1]] << entry[0]) && oratab[entry[1]].sort!
   end
 end
 
@@ -80,13 +80,26 @@ def get_opatch_ver(homedir)
   version
 end
 
+## Return the ORACLE_BASE for an Oracle Home
+## Parameters:
+##   homedir (string): the Oracle Home
+def get_oracle_base(homedir)
+  oraclehomeprops = homedir + '/inventory/ContentsXML/oraclehomeproperties.xml'
+  oraclebase = nil
+  if File.readable?(oraclehomeprops)
+    p_root = Document.new(File.new(oraclehomeprops)).root
+    p_root.each_element('//PROPERTY') { |prop| oraclebase = prop['VAL'] if prop['NAME'] == 'ORACLE_BASE' }
+  end
+  oraclebase
+end
+
 ## Parse the Central Inventory and begin setting the Fact variables
 if central_inv and File.readable?(central_inv)
   o_inventory['oracle_inventory'] = central_inv
   c_root = Document.new(File.new(central_inv)).root
   c_root.each_element('//HOME') do |home|
     next unless home['REMOVED'].nil? && File.directory?(home['LOC'])
-    home_dir       = home['LOC']
+    home_dir = home['LOC']
     home_inv_comps = home_dir + '/inventory/ContentsXML/comps.xml'
     next unless File.readable?(home_inv_comps)
     l_root = Document.new(File.new(home_inv_comps)).root
@@ -107,9 +120,12 @@ if central_inv and File.readable?(central_inv)
             psu_inst_time = psu_data['inst_time']
           end
         end
+        ## Get the ORACLE_BASE
+        oracle_base = get_oracle_base(home_dir)
         ## There can be only one
         o_inventory['oracle_crs_home'] = { home_dir => {} }
         comp['VER'].nil? || o_inventory['oracle_crs_home'][home_dir]['ver'] = comp['VER']
+        oracle_base.nil? || o_inventory['oracle_crs_home'][home_dir]['oracle_base'] = oracle_base
         comp['INSTALL_TIME'].nil? || o_inventory['oracle_crs_home'][home_dir]['inst_time'] = comp['INSTALL_TIME']
         opatch_ver.nil? || o_inventory['oracle_crs_home'][home_dir]['opatch_ver'] = opatch_ver
         psu_ver.nil? || o_inventory['oracle_crs_home'][home_dir]['psu_ver'] = psu_ver
@@ -160,9 +176,12 @@ if central_inv and File.readable?(central_inv)
             psu_inst_time = psu_data['inst_time']
           end
         end
+        ## Get the ORACLE_BASE
+        oracle_base = get_oracle_base(home_dir)
         o_inventory.key?('oracle_db_home') || o_inventory['oracle_db_home'] = {}
         db_home_inventory = {}
         comp['VER'].nil? || db_home_inventory['ver'] = comp['VER']
+        oracle_base.nil? || db_home_inventory['oracle_base'] = oracle_base
         comp['INSTALL_TIME'].nil? || db_home_inventory['inst_time'] = comp['INSTALL_TIME']
         opatch_ver.nil? || db_home_inventory['opatch_ver'] = opatch_ver
         psu_ver.nil? || db_home_inventory['psu_ver'] = psu_ver
