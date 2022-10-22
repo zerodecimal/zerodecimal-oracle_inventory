@@ -85,11 +85,13 @@ end
 ##   homedir (string): the Oracle Home
 def get_oracle_base(homedir)
   oraclehomeprops = homedir + '/inventory/ContentsXML/oraclehomeproperties.xml'
+  default_oracle_base = (Facter.value(:kernel) =~ %r{windows}i) ? 'C:\app\oracle' : '/u01/app/oracle'
   oraclebase = nil
   if File.readable?(oraclehomeprops)
     p_root = Document.new(File.new(oraclehomeprops)).root
     p_root.each_element('//PROPERTY') { |prop| oraclebase = prop['VAL'] if prop['NAME'] == 'ORACLE_BASE' }
   end
+  oraclebase = default_oracle_base if oraclebase.nil? or oraclebase.sub(%r{^(.+)/$}, '\1') == homedir
   oraclebase
 end
 
@@ -99,7 +101,7 @@ if central_inv and File.readable?(central_inv)
   c_root = Document.new(File.new(central_inv)).root
   c_root.each_element('//HOME') do |home|
     next unless home['REMOVED'].nil? && File.directory?(home['LOC'])
-    home_dir = home['LOC']
+    home_dir = home['LOC'].sub(%r{^(.+)/$}, '\1')
     home_inv_comps = home_dir + '/inventory/ContentsXML/comps.xml'
     next unless File.readable?(home_inv_comps)
     l_root = Document.new(File.new(home_inv_comps)).root
@@ -120,10 +122,8 @@ if central_inv and File.readable?(central_inv)
             psu_inst_time = psu_data['inst_time']
           end
         end
-        ## Get the ORACLE_BASE
-        oracle_base = get_oracle_base(home_dir)
         ## There can be only one
-        o_inventory['oracle_crs_home'] = { home_dir => {} }
+        o_inventory['oracle_crs_home'] = { home_dir => { 'oracle_base' => get_oracle_base(home_dir) } }
         comp['VER'].nil? || o_inventory['oracle_crs_home'][home_dir]['ver'] = comp['VER']
         oracle_base.nil? || o_inventory['oracle_crs_home'][home_dir]['oracle_base'] = oracle_base
         comp['INSTALL_TIME'].nil? || o_inventory['oracle_crs_home'][home_dir]['inst_time'] = comp['INSTALL_TIME']
@@ -176,10 +176,8 @@ if central_inv and File.readable?(central_inv)
             psu_inst_time = psu_data['inst_time']
           end
         end
-        ## Get the ORACLE_BASE
-        oracle_base = get_oracle_base(home_dir)
         o_inventory.key?('oracle_db_home') || o_inventory['oracle_db_home'] = {}
-        db_home_inventory = {}
+        db_home_inventory = { 'oracle_base' => get_oracle_base(home_dir) }
         comp['VER'].nil? || db_home_inventory['ver'] = comp['VER']
         oracle_base.nil? || db_home_inventory['oracle_base'] = oracle_base
         comp['INSTALL_TIME'].nil? || db_home_inventory['inst_time'] = comp['INSTALL_TIME']
@@ -187,7 +185,7 @@ if central_inv and File.readable?(central_inv)
         psu_ver.nil? || db_home_inventory['psu_ver'] = psu_ver
         psu_inst_time.nil? || db_home_inventory['psu_inst_time'] = psu_inst_time
         oratab.key?(home_dir) && db_home_inventory['sid'] = oratab[home_dir]
-        db_home_inventory.empty? || o_inventory['oracle_db_home'][home_dir] = db_home_inventory
+        o_inventory['oracle_db_home'][home_dir] = db_home_inventory
         break
       ## OMS Home
       when 'oracle.sysman.top.oms'
