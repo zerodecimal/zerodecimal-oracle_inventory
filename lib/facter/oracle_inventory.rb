@@ -32,7 +32,7 @@ begin
   ## Cache the DB home and SID information from /etc/oratab (including ASM)
   if !oratab_file.nil? and File.readable?(oratab_file)
     File.open(oratab_file, 'r').each_line do |line|
-      next unless line[%r{^[\+a-z]}i]
+      next unless line[%r{^(?:[a-z]|\+asm)}i]
       entry = line.split(':')
       oratab.key?(entry[1]) || oratab[entry[1]] = []
       (oratab[entry[1]] << entry[0]) && oratab[entry[1]].sort!

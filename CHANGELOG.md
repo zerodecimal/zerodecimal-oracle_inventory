@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## Release 0.6.7
+
+- Ignore ASM Proxy instances in oratab
+
 ## Release 0.6.6
 
 - Added a default value for oracle_base
